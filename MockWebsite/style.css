@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css?family=Six+Caps');
+@font-face {
+  font-family: 'Lucida Grande';
+  src: local('Lucid Grande'),
+       url(/fonts/LucidaGrande.ttf) format('truetype');
+}
+
+img {
+  border: 25px solid #fff;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 880px;
+}
+
+h1 {
+  font-family: 'six caps';
+  font-size: 60px;
+  color: white;
+  font-weight: normal;
+}
+
+#address pre {
+  font-family: 'Helvetica'/*'Lucida Grande'*/;
+  font-size: 10px;
+}
+
+#content {
+  width: 930px;
+  margin: 0 auto;
+  background-color: #47a4d6;
+  font-family: 'Helvetica'/*'Lucida Grande'*/;
+  overflow: hidden;
+}
+
+#menu {
+  background-color: #fff;
+  text-align: center;
+  padding: 10px;
+  margin: 0px;
+}
+
+#detail {
+  font-family: 'Helvetica';
+}
+
+#menu li {
+  text-align: center;
+  list-style: none;
+  display: inline-block;
+  text-transform: uppercase;
+  padding: 0px 30px;
+  border-right: 1px solid lightgray;
+}
+
+#menu a {
+  text-decoration: none;
+  color: lightgray;
+  font-family: 'six caps';
+  font-size: 48px;
+}
+
+#menu a:HOVER {
+  color: #47a4d6;
+}
+
+#menu a.active {
+  color: #47a4d6;
+  background-color: #fff;
+}
+
+#newspic {
+  width: 100px;
+}
+
+#heading {
+    color: #fff;
+    height: 100px;
+}
+
+#heading #social {
+  float: left;
+  vertical-align: middle;
+  width: 310px;
+  display: inline;
+  padding-top: 75px;
+}
+
+#heading #title {
+  text-transform: uppercase;
+  width: 340px;
+  text-align: center;
+  float: left;
+  font-size: 144px;
+  font-family: "six caps";
+  padding: 30px 0px;
+  margin: 0px;
+  font-weight: normal;
+}
+
+#heading #social ul {
+  display: inline-flex;
+  text-decoration: 0;
+  list-style: none;
+}
+
+#heading #social li {
+  text-decoration: 0;
+  list-style: none;
+}
+
+#heading #address {
+  float: right;
+  text-align: right;
+  vertical-align: middle;
+  padding-top: 100px;
+  font-weight: normal;
+  font-size: 12px;
+  width: 280px;
+  padding-right: 25px;
+}
+
+#gallery {
+  margin-left: 25px;
+  float: left;
+  max-width: 310px;
+  background-color: white;
+  margin-top: 40px;
+}
+
+#gallery p {
+  background-colour: white;
+  padding-top: 25px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 0px;
+  font-family: 'six caps';
+  font-size: 36px;
+  color: #6e7878;
+}
+
+#gallery a {
+  margin-left: 20px;
+}
+
+#gallery #galleryimage {
+  background-color: #fff;
+  float: left;
+  width: 277px;
+}
+
+#info {
+  padding-top: 50px;
+  color: white;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+#info #detail {
+  float: left;
+  width: 310px;
+  padding-top: 50px;
+  padding-left: 20px;
+  padding-bottom: 50px;
+  text-transform: uppercase;
+}
+
+#info li {
+  list-style-image: url(dot.png);
+  padding: 5px;
+}
+
+#footer {
+  background-color: #fff;
+  width: 100%;
+  margin-top: 10px;
+  width: 930px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.button {
+  background-color: #47a4d6;
+  border: none;
+  color: white;
+  padding: 20px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.buttonmore {
+  background-color: white;
+  border-radius: 5px;
+  color: #47a4d6;
+  font-size: 11px;
+  padding: 15px 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  margin-left: 10px;
+}
+
+.triangledown {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 100px 100px 0 100px;
+  border-color: #ffffff transparent transparent;
+  margin: auto;
+}
+
+/* Slideshow */
+* {box-sizing:border-box}
+
+/* Slideshow container */
+#hero-image {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+#hero-image img {
+  border: 25px solid #fff;
+}
+
+/* Hide the images by default */
+.mySlides {
+    display: none;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  color: #8D97B8;
+  font-size: 15px;
+  padding: 0px 12px;
+  position: absolute;
+  bottom: 18px;
+  width: 100%;
+  text-align: left;
+  margin-left: 36px;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: 1px solid #47a4d6;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #47a4d6;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}

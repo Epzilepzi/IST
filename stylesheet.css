@@ -1,0 +1,14 @@
+body {
+  font-family: "Ubuntu";
+}
+
+a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #00FF00;
+}
+
+a:HOVER {
+  color: #00FF00;
+  text-decoration: underline;
+}

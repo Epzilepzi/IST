@@ -1,0 +1,151 @@
+<html>
+<head>
+  <title>Something Fishy!</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+  <div id="content">
+    <div id="menu">
+      <ul>
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#gallery">gallery</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li style="border: 0px;"><a href="#mail">Mail Us</a></li>
+    </div>
+
+    <div id="heading">
+      <div class="triangledown"></div>
+      <div id="social">
+        <ul>
+          <!-- Original Buttons
+          <a href="#social"><img src="twitter.jpg" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="facebook.jng" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="googleplus.jpg" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="rss.jpg" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="linkedin.jpg" alt=twitter style="width: 40px; border: 0px;"/></a> -->
+          <!-- PNG Buttons -->
+          <a href="#social"><img src="twitter.png" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="facebook.png" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="googleplus.png" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="rss.png" alt=twitter style="width: 40px; border: 0px;"/></a>
+          <a href="#social"><img src="linkedin.png" alt=twitter style="width: 40px; border: 0px;"/></a>
+        </ul>
+      </div>
+      <div id="title">Aquarium</div>
+      <div id="address">
+        <pre>8901 MARMORA ROAD,
+GLASGOW, D04 89GR.
+PHONE: +1 800 559 6580</pre>
+      </div>
+    </div>
+
+    <div id="hero-image">
+      <div class="mySlides fade">
+        <img src="FishPic.jpg" width="80%">
+        <p class="text">PLACEHOLDER TEXT</p>
+      </div>
+
+      <div class="mySlides fade">
+        <img src="FishPic.jpg" width="80%">
+        <p class="text">PLACEHOLDER TEXT</p>
+      </div>
+
+      <div class="mySlides fade">
+        <img src="FishPic.jpg" width="80%">
+        <p class="text">PLACEHOLDER TEXT</p>
+      </div>
+
+        <!-- Next and previous buttons -->
+      <div style="margin:0px;">
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+      </div>
+      <!-- The dots/circles -->
+      <div style="text-align:center;background-color:white;padding-top:5px;padding-bottom:30px;margin-left:25px;margin-right:25px;float:center;max-width:relative;">
+        <span style="text-align:center;" class="dot" onclick="currentSlide(1)"></span>
+        <span style="text-align:center;" class="dot" onclick="currentSlide(2)"></span>
+        <span style="text-align:center;" class="dot" onclick="currentSlide(3)"></span>
+      </div>
+    </div>
+
+    <div id="gallery">
+      <img src="SmallFish1.jpg" id="galleryimage"/>
+      <p>Dory is lost</p>
+      <a href="#more" class="button">MORE</a>
+    </div>
+
+    <div id="gallery">
+      <img src="SmallFish2.jpg" id="galleryimage"/>
+      <p>Nemo is worried</p>
+      <a href="#more" class="button">MORE</a>
+    </div>
+
+    <div id="gallery">
+      <img src="SmallFish3.jpg" id="galleryimage"/>
+      <p>Primary ingredient in lutefisk</p>
+      <a href="#more" class="button">MORE</a>
+    </div>
+
+    <div id="info">
+      <div id="detail">
+        <h1>Services</h1>
+        <ul>
+          <li>We make lutefisk</li>
+          <li>Skidaddle Skidoodle</li>
+          <li>Placeholder text</li>
+          <li>Placeholder text</li>
+          <li>Placeholder text</li>
+          <li>We relocate dorys with their clownfish frens</li>
+          <li>OwO</li>
+        </ul>
+        <br>
+        <br>
+        <a href="#more" class="buttonmore">More</a>
+      </div>
+      <div id="detail">
+        <h1>Welcome</h1>
+        <a href="#more" class="buttonmore">More</a>
+      </div>
+      <div id="detail">
+        <h1>Latest News</h1>
+        <a href="#more" class="buttonmore">More</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <h1> YEET </h1>
+  </div>
+</div>
+  <script>
+  var slideIndex = 1;
+  showSlides(slideIndex);
+
+  // Next/previous controls
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+
+  // Thumbnail image controls
+  function currentSlide(n) {
+    showSlides(slideIndex = n);
+  }
+
+  function showSlides(n) {
+    var i;
+    var slides = document.getElementsByClassName("mySlides");
+    var dots = document.getElementsByClassName("dot");
+    if (n > slides.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex-1].style.display = "block";
+    dots[slideIndex-1].className += " active";
+  }
+  </script>
+</body>
+</html>
