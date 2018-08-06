@@ -20,6 +20,12 @@ h1 {
   font-weight: normal;
 }
 
+p {
+  font-size: 10px;
+  line-height: 1.75;
+  padding-bottom: 5px;
+}
+
 #address pre {
   font-family: 'Helvetica'/*'Lucida Grande'*/;
   font-size: 10px;
@@ -153,7 +159,7 @@ h1 {
   padding-top: 50px;
   color: white;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 10px;
 }
 
 #info #detail {
@@ -167,7 +173,8 @@ h1 {
 
 #info li {
   list-style-image: url(dot.png);
-  padding: 5px;
+  /* padding: 5px; */
+  margin-bottom: 5px;
 }
 
 #footer {
@@ -201,6 +208,13 @@ h1 {
   text-decoration: none;
   text-transform: uppercase;
   margin-left: 10px;
+}
+
+.spooky {
+  font-size: 10px;
+  color: #96d2f0;
+  padding-bottom: 0px;
+  line-spacing: 0px;
 }
 
 .triangleup {
