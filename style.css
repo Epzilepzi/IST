@@ -4,18 +4,22 @@
 body {
   font-family: "Ubuntu", sans-serif;
   background: linear-gradient(to top right, #D585FF, #00FFEE);
-  margin: 0 auto;
+  margin: auto;
 }
 
-img {
-  float: center;
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
 }
+
 
 #main {
   background-color: #662D8C;
   color: #000;
   width: 60%;
-  margin: 0 auto;
+  margin: auto;
   /* padding: 0px 0px 0px 0px; */
   display: table;
 }
@@ -47,6 +51,7 @@ img {
   background: -webkit-linear-gradient(to right, #1565C0, #b92b27);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #1565C0, #b92b27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color: #fff
+  width: auto;
 }
 
 #menu ul {
@@ -138,4 +143,12 @@ img {
   background-color: #eee;
   background: linear-gradient(to top right, #FCA5F1, #B5FFFF);
   padding: 10px 0;
+}
+
+#footer a:visited {
+  color: #0000EE;
+}
+
+#footer a:hover {
+  color: #551A8B;
 }
