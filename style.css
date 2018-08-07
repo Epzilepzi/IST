@@ -7,6 +7,10 @@ body {
   margin: 0 auto;
 }
 
+img {
+  float: center;
+}
+
 #main {
   background-color: #662D8C;
   color: #000;
