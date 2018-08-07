@@ -21,6 +21,15 @@ h1 {
   font-weight: normal;
 }
 
+h3 {
+  font-family: 'Trebuchet MS';
+  font-size: 10px;
+  font-weight: normal;
+  padding: 0px;
+  margin-top: -8px;
+  text-transform: uppercase;
+}
+
 p {
   font-size: 10px;
   line-height: 1.8;
@@ -180,6 +189,7 @@ p {
   text-transform: uppercase;
   font-size: 10px;
   padding-bottom: 0px;
+  font-family: "Trebuchet MS";
 }
 
 #info #detail {
@@ -192,27 +202,43 @@ p {
   text-transform: uppercase;
 }
 
+#detail .fa {
+  color: white;
+  font-size: 16px;
+  display: relative;
+}
+
 #info li {
-  list-style-image: url(dot.png);
-  /* padding: 5px; */
-  margin-bottom: 5px;
-  margin-left: 25px;
+  padding-left: 15px;
+  margin-bottom: 10px;
+  margin-left: 0px;
+  font-family: "Trebuchet MS";
+  font-size: 12px;
 }
 
 #info ul {
-  margin-left: 0px;
   display: contents;
+  font-family: "Trebuchet MS";
+  padding-left: 1em;
+  text-indent: -1em;
+  list-style: none;
+  margin-left: 0px;
 }
 
 #info img {
   width: 100px;
-  border: 7px solid white;
+  border: 8px solid white;
   margin-bottom: 20px;
   margin-right: 20px;
   float: left;
   content: "";
   clear: both;
   display: table;
+  margin-left: 10px;
+}
+
+#info p {
+  margin-left: 10px;
 }
 
 #footer {
@@ -223,16 +249,19 @@ p {
   margin-right: auto;
   text-align: center;
   color: #aab4be;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
 }
 
-#footer p, em {
+#footer p {
   font-family: "Trebuchet MS";
-  font-size: 14px;
-  padding-top: 10px;
+  font-size: 16px;
 }
 
 #footer h1 {
-  color: #aabbbe;
+  color: #47a4d6;
+  padding: 0px;
+  display: inline;
 }
 
 #footersection {
@@ -241,7 +270,8 @@ p {
 }
 
 #footersection p, h1, h2 {
-  padding: 10px;
+  padding-top: 10px;
+  float: center;
 }
 
 #footersection h2 {
@@ -275,7 +305,7 @@ p {
 }
 
 .edge p {
-  margin-right: 20px;
+  margin-right: 0px;
 }
 
 .spooky {
