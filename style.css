@@ -7,6 +7,11 @@ body {
   margin: auto;
 }
 
+img {
+  position: relative;
+  display: block;
+}
+
 .center {
   display: block;
   margin-left: auto;
@@ -35,6 +40,7 @@ body {
 #header img {
   width: 48px;
   padding: 0px 0px 0px 0px;
+  display: inline-block;
 }
 
 #header h1 {
