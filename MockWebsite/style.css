@@ -171,6 +171,7 @@ p {
   color: white;
   text-transform: uppercase;
   font-size: 10px;
+  padding-bottom: 0px;
 }
 
 #info #detail {
@@ -178,7 +179,7 @@ p {
   width: 395px;
   padding-top: 50px;
   padding-left: 30px;
-  padding-bottom: 100px;
+  padding-bottom: 50px;
   padding-right: 5px;
   text-transform: uppercase;
 }
@@ -197,10 +198,13 @@ p {
 
 #info img {
   width: 100px;
-  border: 8px solid white;
-  margin: 0px;
-  margin-right: 10px;
+  border: 7px solid white;
+  margin-bottom: 20px;
+  margin-right: 20px;
   float: left;
+  content: "";
+  clear: both;
+  display: table;
 }
 
 #footer {
@@ -233,6 +237,7 @@ p {
   padding: 15px 20px;
   text-decoration: none;
   text-transform: uppercase;
+  float: left;
 }
 
 .edge p {
@@ -245,6 +250,10 @@ p {
   padding-bottom: 0px;
   line-spacing: 0px;
   margin: 0;
+}
+
+.funky {
+  margin-top: 12px;
 }
 
 .triangleup {
