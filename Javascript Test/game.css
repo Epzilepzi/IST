@@ -1,0 +1,37 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+#game {
+    display: block;
+}
+
+#moneyz {
+    margin: 0 auto;
+    text-align: center;
+}
+
+#item {
+    width: 45%;
+    float: left;
+    text-align: center;
+    margin: 2.5%;
+    background-color: magenta;
+}
+
+#footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    float: center;
+    display: table;
+    width: 100%;
+}
+
+#footer h2 {
+    font-weight: normal;
+}

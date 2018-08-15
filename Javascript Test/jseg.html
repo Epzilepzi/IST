@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Javascript Test</title>
+        <script>
+            function changeTest() {
+                const o = document.getElementById("test");
+                const n = document.getElementById("number");
+                
+                if(o.innerHTML === "Steve") {
+                    o.innerHTML = "Dwayne";
+                } else {
+                    o.innerHTML = "Steve";
+                }
+                n.innerHTML = parseInt(n.innerHTML) + 1;
+                
+            }
+        </script>
+    </head>
+    <body>
+        <h1 onclick="changeTest();">Javascript Test</h1>
+        <p id="test">Yeet</p>
+        <p id="number">0</p>
+        <button onclick="changeTest();">Click Me</button>
+    </body>
+</html>
