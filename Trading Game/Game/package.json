@@ -4,11 +4,26 @@
   "description": "Yeetmeister Trading Game v1",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "build"
   },
   "author": "Yeetmeister",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^2.0.7"
+    "asar": "^0.14.3",
+    "electron": "^2.0.7",
+    "electron-builder": "^20.28.1"
+  },
+  "build": {
+    "appId": "com.yeetmeister.game",
+    "mac": {
+      "target": "mas",
+      "category": "public.app-category.games",
+      "icon": "icons/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icons/icon.ico"
+    }
   }
 }
