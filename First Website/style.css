@@ -141,11 +141,11 @@ img {
 }
 
 #sidebar a:HOVER {
-  background: fuchsia;
+  background: repeating-linear-gradient(to bottom right, #312A6C, #852D91);
 }
 
 #sidebar a.active {
-  background:  fuchsia;
+  background: repeating-linear-gradient(to bottom right, #312A6C, #852D91);
 }
 
 #footer {
