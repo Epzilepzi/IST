@@ -1,16 +1,14 @@
-li {
-  list-style: none;
-  margin: 0px 20px;
-  padding: 5px;
+body {
+  font-family: "Ubuntu";
+}
+
+a {
+  font-weight: 600;
   text-decoration: none;
+  color: #00FF00;
 }
 
-ul {
-  margin: 0px;
-  padding: 0px;
-}
-
-h1 {
-  padding: 0px;
-  margin: 10px;
+a:HOVER {
+  color: #00FF00;
+  text-decoration: underline;
 }
