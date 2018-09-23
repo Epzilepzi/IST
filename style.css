@@ -3,7 +3,10 @@
 /* Global Settings */
 body {
   font-family: "Ubuntu", sans-serif;
-  background: linear-gradient(to top right, #D585FF, #00FFEE);
+  background-image: url("bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment:fixed;
   margin: auto;
 }
 
