@@ -107,11 +107,15 @@ local function createObstacles()
     local whereFrom = math.random( 3 )
     local newObstacle
     local newPowerup
-    if (whoDis >= 10) then
+    local alreadySpawned = 0
+    if (whoDis >= 10 or level < 5 or alreadySpawned > 0) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
         physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
         newObstacle.myName = "enemy"
+        if (alreadySpawned > 0) then
+            alreadySpawned = alreadySpawned - 1
+        end
         if (whereFrom == 1) then
             newObstacle.x = -60
             newObstacle.y = math.random ( 800 )
@@ -125,11 +129,12 @@ local function createObstacles()
             newObstacle.y = math.random( 800 )
             newObstacle:setLinearVelocity( math.random( level * -150, level * -100), math.random( level * 2, level * 100) )
         end
-    else 
+    else
         local powerUpNumber = math.random( 2, 4 )
         newPowerup = display.newImageRect( mainGroup, objectSheet, powerUpNumber, 200, 200 )
         table.insert( obstacleTable, newPowerup )
         physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
+        alreadySpawned = 50
         if (powerUpNumber == 2) then
             newPowerup.myName = "firefox"
         elseif (powerUpNumber == 3) then
