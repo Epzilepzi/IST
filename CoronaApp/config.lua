@@ -7,9 +7,15 @@ application =
 {
 	content =
 	{
+		--[[
 		width = 1080,
 		height = 1920, 
-		scale = "zoomEven",
+		scale = "letterbox",
+		--]]
+
+		width = 1080,
+		height = 1920,
+		scale = "letterbox",
 		fps = 60,
 		
 		--[[
