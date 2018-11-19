@@ -11,6 +11,7 @@ local scene = composer.newScene()
 
 -- Load Difficulty Settings
 require( "difficulty" )
+local minTime = 1
 
 -- Physics Engine
 local physics = require( "physics" )
@@ -41,7 +42,7 @@ local shootTimer
 -- HUD
 local lives = 3
 local score = 0
-local level = 10
+local level = 1
 
 -- Set Game Timer
 local time = 400
@@ -53,6 +54,9 @@ local fireMode = 1
 local alreadySpawned = 0
 local playernumber = 1
 
+-- "Fun"
+local missed = 0
+
 -- Load Assets
 local objectSheetOptions =
 {
@@ -61,33 +65,54 @@ local objectSheetOptions =
         {   -- 1) Internet Explorer
             x = 0,
             y = 0,
-            width = 206,
-            height = 206,
+            width = 300,
+            height = 300,
         },
         {   -- 2) Firefox
             x = 0,
-            y = 207,
-            width = 206,
-            height = 206,
+            y = 301,
+            width = 300,
+            height = 300,
         },
         {   -- 3) Chrome
             x = 0,
-            y = 413,
-            width = 200,
-            height = 200,
+            y = 602,
+            width = 300,
+            height = 300,
         },
         {   -- 4) Opera
             x = 0,
-            y = 614,
-            width = 200,
-            height = 200,
+            y = 903,
+            width = 300,
+            height = 300,
         },
         {
             -- 5) Edge
             x = 0,
-            y = 815,
-            width = 200,
-            height = 188,
+            y = 1204,
+            width = 300,
+            height = 300,
+        },
+        {
+            -- 6) Safari
+            x = 0,
+            y = 2553,
+            width = 300,
+            height = 300,
+        },
+        {
+            -- 7) SQL
+            x = 0,
+            y = 1505,
+            width = 300,
+            height = 524,
+        },
+        {
+            -- 8) Javascript
+            x = 0,
+            y = 2030,
+            width = 300,
+            height = 522
         }
     },
 }
@@ -96,8 +121,11 @@ local powerUpOptions =
 {
     frames =
     {
-        { -- 1) Up fireTime (Chrome)
+        { -- 1) Add Lives (Lua)
 
+        },
+        { -- 2) Slow "Time" (Java)
+            
         }
     }
 }
@@ -108,7 +136,8 @@ local characters =
     { name = "firefox", start = 2, count = 1 },
     { name = "chrome", start = 3, count = 1 },
     { name = "opera", start = 4, count = 1 },
-    { name = "edge", start = 5, count = 1 }
+    { name = "edge", start = 5, count = 1 },
+    { name = "safari", start = 6, count = 1}
 }
 
 local objectSheet = graphics.newImageSheet( "assets/images/gameObjects.png", objectSheetOptions )
@@ -120,7 +149,7 @@ local function createObstacles()
     local whereFrom = math.random( 4 )
     local newObstacle
     local newPowerup
-    local powerUpNumber = math.random( 2, 5 )
+    local powerUpNumber = math.random( 2, 6 )
     local rand1 = math.random( level * 50, level * 100 )
     local rand2 = math.random( level * -100, level * -50 )
     local rand3 = math.random( level * 2, level * 50 )
@@ -128,7 +157,7 @@ local function createObstacles()
     if (whoDis >= 10 or level < 5 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
-        physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
+        physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5} )
         newObstacle.myName = "ie11"
         if (whereFrom == 1) then
             newObstacle.x = -60
@@ -146,7 +175,7 @@ local function createObstacles()
     else
         newPowerup = display.newImageRect( mainGroup, objectSheet, powerUpNumber, 200, 200 )
         table.insert( powerupTable, newPowerup )
-        physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
+        physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
         alreadySpawned = 10
         if (powerUpNumber == 2) then
             newPowerup.myName = "firefox"
@@ -156,6 +185,8 @@ local function createObstacles()
             newPowerup.myName = "opera"
         elseif (powerUpNumber == 5) then
             newPowerup.myName = "edge"
+        elseif (powerUpNumber == 6) then
+            newPowerup.myName = "safari"
         end
         print(newPowerup.myName)
         if (whereFrom == 1) then
@@ -188,7 +219,7 @@ local shooting = false
 local function fireShit()
     if (shooting == true and died == false) then
         if (fireMode == 1) then
-            local pew = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
+            local pew = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
             physics.addBody( pew, "dynamic", {isSensor=true} )
             pew.isBullet = true
             pew.myName = "pew"
@@ -199,9 +230,9 @@ local function fireShit()
                 onComplete = function() display.remove( pew ) end 
             } )
         elseif (fireMode == 2) then
-            local pew1 = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
-            local pew2 = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
-            local pew3 = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
+            local pew1 = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
+            local pew2 = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
+            local pew3 = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
             pew2.rotation = 5.71
             pew3.rotation = 354.29
             physics.addBody( pew1, "dynamic", {isSensor=true} )
@@ -269,6 +300,9 @@ end
 
 -- Game Loop
 local function gameLoop()
+    -- This will be useful soon... 
+    local newGame = true
+    -- Performs Game Loop if not deaded.
     if (gameOver == false) then
         -- Create new obstacle
         -- createObstacles()
@@ -288,9 +322,6 @@ local function gameLoop()
             createObstacles()
             createObstacles()
         end
-        if time >= 50 then
-            time = time - 1
-        end
     end
     -- Remove enemies which have drifted off screen
     for i = #obstacleTable, 1, -1 do
@@ -300,11 +331,13 @@ local function gameLoop()
              thisBoi.y < -100 or
              thisBoi.y > display.contentHeight + 100 )
         then
+            missed = missed + 1
             display.remove( thisBoi )
             table.remove( obstacleTable, i )
+            print("Enemies Missed: "..missed)
         end
     end
-
+    -- Remove powerups which have drifted off into oblivion.
     for i = #powerupTable, 1, -1 do
         local yes = powerupTable[i]
         if ( yes.x < -100 or
@@ -316,7 +349,6 @@ local function gameLoop()
             table.remove( powerupTable, i )
         end
     end
-    -- Check Score and Level Up?
 end
 
 -- Fix player after they dead
@@ -332,29 +364,6 @@ local function restorePlayer()
         end
     } )
 end
-
---[[
-local function powerUp()
-    -- Powerups  
-    if (playernumber == 1) then
-        fireTime = 100
-        fireMode = 1
-        player:setSequence("firefox")
-        player:play()
-    elseif (playernumber == 2) then
-        fireTime = 50
-        fireMode = 2
-        player:setSequence("chrome")
-        player:play()
-    elseif (playernumber == 3) then
-        player:setSequence("opera")
-        player:play()
-    elseif (playernumber == 4) then
-        player.setSequence("edge")
-        player:play()
-    end 
-    player:play()
-end ]]--
 
 local function endGame()
     composer.gotoScene( "gameOver", { time=800, effect="crossFade" } )
@@ -377,15 +386,18 @@ local function onCollision( event )
                     break
                 end
             end
+            -- Add Score
             score = score + 100
             scoreText.text = "Score: " .. score
             if (score >= level * 1000) then
+                -- Level Up
                 level = level + 1
                 levelText.text = "Level: " .. level
-                if (time - (level * 10) >= 5) then
-                    time = time - (level * 10)
+                -- Make Game Run Faster
+                if (time - 10 >= minTime) then
+                    time = time - 10
                 else 
-                    time = 5
+                    time = minTime
                 end
             end
         elseif (( obj1.myName == "player" and obj2.myName == "ie11" ) or ( obj1.myName == "ie11" and obj2.myName == "player" )) then
@@ -451,6 +463,30 @@ local function onCollision( event )
             fireMode = 1
             player:setSequence("firefox")
             player:play()
+        elseif (( obj1.myName == "player" and obj2.myName == "safari" ) or ( obj1.myName == "safari" and obj2.myName == "player" ) or (obj1.myName == "pew" and obj2.myName == "safari") or (obj1.myName == "safari" and obj2.myName == "pew")) then
+            if ((obj1.myName == "pew" and obj2.myName == "safari") or (obj1.myName == "safari" and obj2.myName == "pew")) then
+                if (obj1.myName == "pew") then
+                    display.remove(obj1)
+                elseif (obj2.myName == "pew") then
+                    display.remove(obj2)
+                end
+            end
+            if (obj1.myName == "safari") then
+                display.remove( obj1 )
+            elseif (obj2.myName == "safari") then
+                display.remove( obj2 )
+            end
+            for i = #powerupTable, 1, -1 do
+                if ( powerupTable[i] == obj1 or powerupTable[i] == obj2 ) then
+                    table.remove( powerupTable, i )
+                    break
+                end
+            end
+            playernumber = 1
+            fireTime = 50
+            fireMode = 1
+            player:setSequence("safari")
+            player:play()
         end
     end
 end
@@ -500,12 +536,13 @@ function scene:create( event )
     physics.addBody( player, "dynamic", {radius=100, isSensor=true,} )
     player.myName = "player"
     player:setSequence("firefox")
+    player:scale((200/300), (200/300))
     player:play()
 
     -- Display lives and score
-    livesText = display.newText( { parent=uiGroup, text="Lives: " .. lives, x=930, y=100, font=native.systemFont, fontSize=72, align=right } )
-    scoreText = display.newText( uiGroup, "Score: " .. score, display.contentCenterX, 125, native.systemFont, 72 )
-    levelText = display.newText( uiGroup, "Level: " .. level, 150, 100, native.systemFont, 72 )
+    livesText = display.newText( uiGroup, "Lives: " .. lives, display.contentCenterX + 360, 75, native.systemFont, 72, right )
+    scoreText = display.newText( uiGroup, "Score: " .. score, display.contentCenterX, 150, native.systemFont, 72, center )
+    levelText = display.newText( uiGroup, "Level: " .. level, display.contentCenterX - 360, 75, native.systemFont, 72 )
 
 end
 
