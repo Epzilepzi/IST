@@ -27,26 +27,31 @@ local backGroup
 local mainGroup 
 local uiGroup 
 
+-- Game Objects
 local obstacleTable = {}
+local powerupTable = {}
 local player
 local floor
 local gameLoopTimer
 local livesText
 local scoreText
 local levelText
-local powerupTimer
+local shootTimer
 
+-- HUD
 local lives = 3
 local score = 0
-local level = 1
-
-local playernumber = 1
-
-local fireSpeed = 100
+local level = 10
 
 -- Set Game Timer
-local time = 300
+local time = 400
 local powerupTime = 5000
+local fireTime = 100
+local fireMode = 1
+
+-- PowerUp Settings
+local alreadySpawned = 0
+local playernumber = 1
 
 -- Load Assets
 local objectSheetOptions =
@@ -76,6 +81,13 @@ local objectSheetOptions =
             y = 614,
             width = 200,
             height = 200,
+        },
+        {
+            -- 5) Edge
+            x = 0,
+            y = 815,
+            width = 200,
+            height = 188,
         }
     },
 }
@@ -84,7 +96,7 @@ local powerUpOptions =
 {
     frames =
     {
-        { -- 1) Up Firespeed (Chrome)
+        { -- 1) Up fireTime (Chrome)
 
         }
     }
@@ -95,7 +107,8 @@ local characters =
 {
     { name = "firefox", start = 2, count = 1 },
     { name = "chrome", start = 3, count = 1 },
-    { name = "opera", start = 4, count = 1 }
+    { name = "opera", start = 4, count = 1 },
+    { name = "edge", start = 5, count = 1 }
 }
 
 local objectSheet = graphics.newImageSheet( "assets/images/gameObjects.png", objectSheetOptions )
@@ -104,59 +117,68 @@ local powerUps = graphics.newImageSheet( "assets/images/powerUps.png", powerUpOp
 -- Create "Enemies"
 local function createObstacles()
     local whoDis = math.random( 300 )
-    local whereFrom = math.random( 3 )
+    local whereFrom = math.random( 4 )
     local newObstacle
     local newPowerup
-    local alreadySpawned = 0
-    if (whoDis >= 10 or level < 5 or alreadySpawned > 0) then
+    local powerUpNumber = math.random( 2, 5 )
+    local rand1 = math.random( level * 50, level * 100 )
+    local rand2 = math.random( level * -100, level * -50 )
+    local rand3 = math.random( level * 2, level * 50 )
+    local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
+    if (whoDis >= 10 or level < 5 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
         physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
-        newObstacle.myName = "enemy"
-        if (alreadySpawned > 0) then
-            alreadySpawned = alreadySpawned - 1
-        end
+        newObstacle.myName = "ie11"
         if (whereFrom == 1) then
             newObstacle.x = -60
             newObstacle.y = math.random ( 800 )
-            newObstacle:setLinearVelocity( math.random( level * 100, level * 150), math.random((level * 2), (level * 100)) )
-        elseif (whereFrom == 2) then
-            newObstacle.x = math.random (display.contentCenterX - 520, display.contentCenterX + 520)
+            newObstacle:setLinearVelocity( rand1, rand3 )
+        elseif (whereFrom == 2 or whereFrom == 4) then
+            newObstacle.x = rand4
             newObstacle.y = -60
-            newObstacle:setLinearVelocity( 0, math.random( level * 50, level * 200) )
+            newObstacle:setLinearVelocity( 0, rand1 )
         elseif (whereFrom == 3) then
             newObstacle.x = display.contentWidth + 60
             newObstacle.y = math.random( 800 )
-            newObstacle:setLinearVelocity( math.random( level * -150, level * -100), math.random( level * 2, level * 100) )
+            newObstacle:setLinearVelocity( rand2, rand3 )
         end
     else
-        local powerUpNumber = math.random( 2, 4 )
         newPowerup = display.newImageRect( mainGroup, objectSheet, powerUpNumber, 200, 200 )
-        table.insert( obstacleTable, newPowerup )
+        table.insert( powerupTable, newPowerup )
         physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
-        alreadySpawned = 50
+        alreadySpawned = 10
         if (powerUpNumber == 2) then
             newPowerup.myName = "firefox"
         elseif (powerUpNumber == 3) then
             newPowerup.myName = "chrome"
         elseif (powerUpNumber == 4) then
             newPowerup.myName = "opera"
+        elseif (powerUpNumber == 5) then
+            newPowerup.myName = "edge"
         end
         print(newPowerup.myName)
         if (whereFrom == 1) then
             newPowerup.x = -60
             newPowerup.y = math.random ( 800 )
-            newPowerup:setLinearVelocity( math.random( level * 100, level * 150), math.random((level * 2), (level * 100)) )
-        elseif (whereFrom == 2) then
+            newPowerup:setLinearVelocity( math.random( 100, 300 ), math.random( 2, 200) )
+        elseif (whereFrom == 2 or whereFrom == 4) then
             newPowerup.x = math.random (display.contentCenterX - 520, display.contentCenterX + 520)
             newPowerup.y = -60
-            newPowerup:setLinearVelocity( 0, math.random( level * 50, level * 200) )
+            newPowerup:setLinearVelocity( 0, math.random( 50, 300) )
         elseif (whereFrom == 3) then
             newPowerup.x = display.contentWidth + 60
             newPowerup.y = math.random( 800 )
-            newPowerup:setLinearVelocity( math.random( level * -150, level * -100), math.random( level * 2, level * 100) )
+            newPowerup:setLinearVelocity( math.random( -150, -100 ), math.random( 50, 150 ) )
         end
         newPowerup:applyTorque( math.random( -100,100 ) )
+    end
+end
+
+-- Counts Down alreadySpawned after powerup spawns
+local function alreadySpawnedCount()
+    if (alreadySpawned > 0) then
+        alreadySpawned = alreadySpawned - 1
     end
 end
 
@@ -165,16 +187,51 @@ local shooting = false
 
 local function fireShit()
     if (shooting == true and died == false) then
-        local pew = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
-        physics.addBody( pew, "dynamic", {isSensor=true} )
-        pew.isBullet = true
-        pew.myName = "pew"
-        pew.x = player.x
-        pew.y = player.y
-        pew:toBack()
-        transition.to( pew, { y=-40, time=500, 
-            onComplete = function() display.remove( pew ) end 
-        } )
+        if (fireMode == 1) then
+            local pew = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
+            physics.addBody( pew, "dynamic", {isSensor=true} )
+            pew.isBullet = true
+            pew.myName = "pew"
+            pew.x = player.x
+            pew.y = player.y
+            pew:toBack()
+            transition.to( pew, { y=-40, time=500, 
+                onComplete = function() display.remove( pew ) end 
+            } )
+        elseif (fireMode == 2) then
+            local pew1 = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
+            local pew2 = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
+            local pew3 = display.newImageRect( mainGroup, objectSheet, 1, 28, 80 )
+            pew2.rotation = 5.71
+            pew3.rotation = 354.29
+            physics.addBody( pew1, "dynamic", {isSensor=true} )
+            physics.addBody( pew2, "dynamic", {isSensor=true} )
+            physics.addBody( pew3, "dynamic", {isSensor=true} )
+            pew1.isBullet = true
+            pew2.isBullet = true
+            pew3.isBullet = true
+            pew1.myName = "pew"
+            pew2.myName = "pew"
+            pew3.myName = "pew"
+            pew1.x = player.x
+            pew1.y = player.y
+            pew2.x = player.x
+            pew2.y = player.y
+            pew3.x = player.x
+            pew3.y = player.y
+            pew1:toBack()
+            pew2:toBack()
+            pew3:toBack()
+            transition.to( pew1, { y=-50, time=1000, 
+                onComplete = function() display.remove( pew1 ) end 
+            } )
+            transition.to( pew2, { x=player.x+500, y=-50, time=1000, 
+                onComplete = function() display.remove( pew2 ) end 
+            } )
+            transition.to( pew3, { x=player.x-500, y=-50, time=1000, 
+                onComplete = function() display.remove( pew3 ) end 
+            } )
+        end
     end
 end
 
@@ -214,8 +271,8 @@ end
 local function gameLoop()
     if (gameOver == false) then
         -- Create new obstacle
-        createObstacles()
-        --[[
+        -- createObstacles()
+        --
         if (level <= 10) then
             createObstacles()
         elseif (level >= 10) then
@@ -233,7 +290,7 @@ local function gameLoop()
         end
         if time >= 50 then
             time = time - 1
-        end ]]--
+        end
     end
     -- Remove enemies which have drifted off screen
     for i = #obstacleTable, 1, -1 do
@@ -247,22 +304,23 @@ local function gameLoop()
             table.remove( obstacleTable, i )
         end
     end
+
+    for i = #powerupTable, 1, -1 do
+        local yes = powerupTable[i]
+        if ( yes.x < -100 or
+             yes.x > display.contentWidth + 100 or
+             yes.y < -100 or
+             yes.y > display.contentHeight + 100 )
+        then
+            display.remove( thisBoi )
+            table.remove( powerupTable, i )
+        end
+    end
     -- Check Score and Level Up?
 end
 
 -- Fix player after they dead
 local function restorePlayer()
-    playernumber = playernumber + 1
--- Testing Stuff  
-    if (playernumber == 2) then
-        player:setSequence("chrome")
-        player:play()
-    elseif (playernumber == 3) then
-        player:setSequence("opera")
-        player:play()
-    end 
--- 
-    player:play()
     player.isBodyActive = false
     player.x = display.contentCenterX
     player.y = display.contentHeight - 200
@@ -275,6 +333,29 @@ local function restorePlayer()
     } )
 end
 
+--[[
+local function powerUp()
+    -- Powerups  
+    if (playernumber == 1) then
+        fireTime = 100
+        fireMode = 1
+        player:setSequence("firefox")
+        player:play()
+    elseif (playernumber == 2) then
+        fireTime = 50
+        fireMode = 2
+        player:setSequence("chrome")
+        player:play()
+    elseif (playernumber == 3) then
+        player:setSequence("opera")
+        player:play()
+    elseif (playernumber == 4) then
+        player.setSequence("edge")
+        player:play()
+    end 
+    player:play()
+end ]]--
+
 local function endGame()
     composer.gotoScene( "gameOver", { time=800, effect="crossFade" } )
 end
@@ -285,7 +366,7 @@ local function onCollision( event )
         local obj1 = event.object1
         local obj2 = event.object2
         -- What to do if the contact stuff is pew and badboi
-        if ((obj1.myName == "pew" and obj2.myName == "enemy") or (obj1.myName == "enemy" and obj2.myName == "pew")) then
+        if ((obj1.myName == "pew" and obj2.myName == "ie11") or (obj1.myName == "ie11" and obj2.myName == "pew")) then
             -- Remove both the pew and badboi
             display.remove( obj1 )
             display.remove( obj2 )
@@ -307,7 +388,7 @@ local function onCollision( event )
                     time = 5
                 end
             end
-        elseif (( obj1.myName == "player" and obj2.myName == "enemy" ) or ( obj1.myName == "enemy" and obj2.myName == "player" )) then
+        elseif (( obj1.myName == "player" and obj2.myName == "ie11" ) or ( obj1.myName == "ie11" and obj2.myName == "player" )) then
             if (died == false) then
                 died = true
                 -- Update lives
@@ -322,6 +403,54 @@ local function onCollision( event )
                     timer.performWithDelay(1000, restorePlayer)
                 end
             end
+        elseif (( obj1.myName == "player" and obj2.myName == "chrome" ) or ( obj1.myName == "chrome" and obj2.myName == "player" ) or (obj1.myName == "pew" and obj2.myName == "chrome") or (obj1.myName == "chrome" and obj2.myName == "pew")) then
+            if ((obj1.myName == "pew" and obj2.myName == "chrome") or (obj1.myName == "chrome" and obj2.myName == "pew")) then
+                if (obj1.myName == "pew") then
+                    display.remove(obj1)
+                elseif (obj2.myName == "pew") then
+                    display.remove(obj2)
+                end
+            end
+            if (obj1.myName == "chrome") then
+                display.remove( obj1 )
+            elseif (obj2.myName == "chrome") then
+                display.remove( obj2 )
+            end
+            for i = #powerupTable, 1, -1 do
+                if ( powerupTable[i] == obj1 or powerupTable[i] == obj2 ) then
+                    table.remove( powerupTable, i )
+                    break
+                end
+            end
+            playernumber = 2
+            fireTime = 500
+            fireMode = 2
+            player:setSequence("chrome")
+            player:play()
+        elseif (( obj1.myName == "player" and obj2.myName == "firefox" ) or ( obj1.myName == "firefox" and obj2.myName == "player" ) or (obj1.myName == "pew" and obj2.myName == "firefox") or (obj1.myName == "firefox" and obj2.myName == "pew")) then
+            if ((obj1.myName == "pew" and obj2.myName == "firefox") or (obj1.myName == "firefox" and obj2.myName == "pew")) then
+                if (obj1.myName == "pew") then
+                    display.remove(obj1)
+                elseif (obj2.myName == "pew") then
+                    display.remove(obj2)
+                end
+            end
+            if (obj1.myName == "firefox") then
+                display.remove( obj1 )
+            elseif (obj2.myName == "firefox") then
+                display.remove( obj2 )
+            end
+            for i = #powerupTable, 1, -1 do
+                if ( powerupTable[i] == obj1 or powerupTable[i] == obj2 ) then
+                    table.remove( powerupTable, i )
+                    break
+                end
+            end
+            playernumber = 1
+            fireTime = 100
+            fireMode = 1
+            player:setSequence("firefox")
+            player:play()
         end
     end
 end
@@ -331,7 +460,7 @@ local function resetGame()
     score = 0
     level = 1
     lives = 3
-    fireSpeed = 100
+    fireTime = 100
     died = false
     time = 500
     powerupTime = 5000
@@ -395,10 +524,13 @@ function scene:show( event )
 
         -- Listens for touch on player
         player:addEventListener( "touch", startFire )
-        powerupTimer = timer.performWithDelay( fireSpeed, fireShit, 0 )
         player:addEventListener( "touch", movePlayer )
+        -- Listen for collisions
         Runtime:addEventListener( "collision", onCollision )
+        -- Game Timers
         gameLoopTimer = timer.performWithDelay( time, gameLoop, 0 )
+        shootTimer = timer.performWithDelay( fireTime, fireShit, 0 )
+        spawnTimer = timer.performWithDelay( 1500, alreadySpawnedCount, 0 )
 	end
 end
 
@@ -412,9 +544,12 @@ function scene:hide( event )
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
         timer.cancel( gameLoopTimer )
- 
+        timer.cancel( shootTimer )
+        timer.cancel( spawnTimer )
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+        player:removeEventListener( "touch", startFire )
+        player:removeEventListener( "touch", movePlayer )
         Runtime:removeEventListener( "collision", onCollision )
         physics.pause()
     end
