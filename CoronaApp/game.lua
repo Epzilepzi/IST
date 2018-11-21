@@ -45,7 +45,7 @@ local score = 0
 local level = 1
 
 -- Set Game Timer
-local time = 400
+local time = 500
 local powerupTime = 5000
 local fireTime = 100
 local fireMode = 1
@@ -56,6 +56,7 @@ local playernumber = 1
 
 -- "Fun"
 local missed = 0
+local randomPosition = math.random( 700 )
 
 -- Load Assets
 local objectSheetOptions =
@@ -143,6 +144,121 @@ local characters =
 local objectSheet = graphics.newImageSheet( "assets/images/gameObjects.png", objectSheetOptions )
 local powerUps = graphics.newImageSheet( "assets/images/powerUps.png", powerUpOptions )
 
+-- Fix player after they dead
+local function restorePlayer()
+    player.isBodyActive = false
+    player.x = display.contentCenterX
+    player.y = display.contentHeight - 200
+    -- Fade in the player
+    transition.to( player, { alpha=1, time=4000,
+        onComplete = function()
+            player.isBodyActive = true
+            died = false
+        end
+    } )
+end
+
+local function onEnemyCollision( self, event )
+    local other = event.other
+    if (event.other.myName == "pew") then 
+        display.remove(self)
+        display.remove(other)
+        for i = #obstacleTable, 1, -1 do
+            if ( obstacleTable[i] == self ) then
+                table.remove( obstacleTable, i )
+                break
+            end
+        end
+        -- Add Score
+        score = score + 100
+        scoreText.text = "Score: " .. score
+        if (score >= level * 1000) then
+            -- Level Up
+            level = level + 1
+            levelText.text = "Level: " .. level
+            -- Make Game Run Faster
+            if (time - 5 >= minTime) then
+                time = time - 5
+                gameLoopTimer._delay = time
+            else 
+                time = minTime
+                gameLoopTimer._delay = time
+            end
+        end
+    elseif (event.other.myName == "player" and playernumber ~= 4) then
+        if (died == false) then
+            died = true
+            -- Update lives
+            lives = lives - 1
+            livesText.text = "Lives: " .. lives
+            if (lives == 0) then
+                display.remove(other)
+                -- timer.performWithDelay( 2000, endGame )
+                gameOver = true
+            else
+                player.alpha = 0
+                timer.performWithDelay(1000, restorePlayer)
+            end
+        end
+    end
+end
+
+local function onPowerupCollision( self, event )
+    local other = event.other
+    if (event.other.myName == "pew" or event.other.myName == "player") then
+        display.remove(self)
+        score = score + 200
+        -- Removes event.other if it is pew
+        if (event.other.myName == "pew") then
+            display.remove(other)
+        end
+        -- Check what type of powerup self is.
+        if (self.myName == "firefox") then
+            playernumber = 1
+            fireTime = 100
+            fireMode = 1
+            player:setSequence("firefox")
+            player:play()
+            shootTimer._delay = fireTime
+        elseif (self.myName == "chrome") then
+            playernumber = 2
+            fireTime = 500
+            fireMode = 2
+            player:setSequence("chrome")
+            player:play()
+            shootTimer._delay = fireTime
+        elseif (self.myName == "opera") then
+            playernumber = 3
+            fireTime = 200
+            fireMode = 1
+            player:setSequence("opera")
+            player:play()
+            shootTimer._delay = fireTime
+        elseif (self.myName == "edge") then
+            playernumber = 4
+            fireTime = 100
+            fireMode = 1
+            player:setSequence("edge")
+            player:play()
+            shootTimer._delay = fireTime
+        elseif (self.myName == "safari") then
+            playernumber = 5
+            fireTime = 50
+            fireMode = 1
+            player:setSequence("safari")
+            player:play()
+            shootTimer._delay = fireTime
+        end
+        -- Removes Powerup from Table so it doesn't break game.
+        for i = #powerupTable, 1, -1 do
+            if ( powerupTable[i] == self ) then
+                table.remove( powerupTable, i )
+                break
+            end
+        end
+    end
+end
+
 -- Create "Enemies"
 local function createObstacles()
     local whoDis = math.random( 300 )
@@ -154,14 +270,16 @@ local function createObstacles()
     local rand2 = math.random( level * -100, level * -50 )
     local rand3 = math.random( level * 2, level * 50 )
     local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
-    if (whoDis >= 10 or level < 5 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
+    if (whoDis >= 10 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
         physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5} )
         newObstacle.myName = "ie11"
+        newObstacle.collision = onEnemyCollision
+        newObstacle:addEventListener( "collision" )
         if (whereFrom == 1) then
             newObstacle.x = -60
-            newObstacle.y = math.random ( 800 )
+            newObstacle.y = randomPosition
             newObstacle:setLinearVelocity( rand1, rand3 )
         elseif (whereFrom == 2 or whereFrom == 4) then
             newObstacle.x = rand4
@@ -169,7 +287,7 @@ local function createObstacles()
             newObstacle:setLinearVelocity( 0, rand1 )
         elseif (whereFrom == 3) then
             newObstacle.x = display.contentWidth + 60
-            newObstacle.y = math.random( 800 )
+            newObstacle.y = randomPosition
             newObstacle:setLinearVelocity( rand2, rand3 )
         end
     else
@@ -177,6 +295,8 @@ local function createObstacles()
         table.insert( powerupTable, newPowerup )
         physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
         alreadySpawned = 10
+        newPowerup.collision = onPowerupCollision
+        newPowerup:addEventListener( "collision" )
         if (powerUpNumber == 2) then
             newPowerup.myName = "firefox"
         elseif (powerUpNumber == 3) then
@@ -216,7 +336,7 @@ end
 -- Shoot Stuff
 local shooting = false
 
-local function fireShit()
+local function shootThings()
     if (shooting == true and died == false) then
         if (fireMode == 1) then
             local pew = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
@@ -309,6 +429,7 @@ local function gameLoop()
         --
         if (level <= 10) then
             createObstacles()
+            randomPosition = math.random( 1200 )
         elseif (level >= 10) then
             createObstacles()
             createObstacles()
@@ -351,145 +472,14 @@ local function gameLoop()
     end
 end
 
--- Fix player after they dead
-local function restorePlayer()
-    player.isBodyActive = false
-    player.x = display.contentCenterX
-    player.y = display.contentHeight - 200
-    -- Fade in the player
-    transition.to( player, { alpha=1, time=4000,
-        onComplete = function()
-            player.isBodyActive = true
-            died = false
-        end
-    } )
-end
-
 local function endGame()
     composer.gotoScene( "gameOver", { time=800, effect="crossFade" } )
 end
 
--- Collision Handling
-local function onCollision( event )
-    if ( event.phase == "began" ) then
-        local obj1 = event.object1
-        local obj2 = event.object2
-        -- What to do if the contact stuff is pew and badboi
-        if ((obj1.myName == "pew" and obj2.myName == "ie11") or (obj1.myName == "ie11" and obj2.myName == "pew")) then
-            -- Remove both the pew and badboi
-            display.remove( obj1 )
-            display.remove( obj2 )
-            -- Remove stuff when boom
-            for i = #obstacleTable, 1, -1 do
-                if ( obstacleTable[i] == obj1 or obstacleTable[i] == obj2 ) then
-                    table.remove( obstacleTable, i )
-                    break
-                end
-            end
-            -- Add Score
-            score = score + 100
-            scoreText.text = "Score: " .. score
-            if (score >= level * 1000) then
-                -- Level Up
-                level = level + 1
-                levelText.text = "Level: " .. level
-                -- Make Game Run Faster
-                if (time - 10 >= minTime) then
-                    time = time - 10
-                else 
-                    time = minTime
-                end
-            end
-        elseif (( obj1.myName == "player" and obj2.myName == "ie11" ) or ( obj1.myName == "ie11" and obj2.myName == "player" )) then
-            if (died == false) then
-                died = true
-                -- Update lives
-                lives = lives - 1
-                livesText.text = "Lives: " .. lives
-                if (lives == 0) then
-                    display.remove(player)
-                    -- timer.performWithDelay( 2000, endGame )
-                    gameOver = true
-                else
-                    player.alpha = 0
-                    timer.performWithDelay(1000, restorePlayer)
-                end
-            end
-        elseif (( obj1.myName == "player" and obj2.myName == "chrome" ) or ( obj1.myName == "chrome" and obj2.myName == "player" ) or (obj1.myName == "pew" and obj2.myName == "chrome") or (obj1.myName == "chrome" and obj2.myName == "pew")) then
-            if ((obj1.myName == "pew" and obj2.myName == "chrome") or (obj1.myName == "chrome" and obj2.myName == "pew")) then
-                if (obj1.myName == "pew") then
-                    display.remove(obj1)
-                elseif (obj2.myName == "pew") then
-                    display.remove(obj2)
-                end
-            end
-            if (obj1.myName == "chrome") then
-                display.remove( obj1 )
-            elseif (obj2.myName == "chrome") then
-                display.remove( obj2 )
-            end
-            for i = #powerupTable, 1, -1 do
-                if ( powerupTable[i] == obj1 or powerupTable[i] == obj2 ) then
-                    table.remove( powerupTable, i )
-                    break
-                end
-            end
-            playernumber = 2
-            fireTime = 500
-            fireMode = 2
-            player:setSequence("chrome")
-            player:play()
-        elseif (( obj1.myName == "player" and obj2.myName == "firefox" ) or ( obj1.myName == "firefox" and obj2.myName == "player" ) or (obj1.myName == "pew" and obj2.myName == "firefox") or (obj1.myName == "firefox" and obj2.myName == "pew")) then
-            if ((obj1.myName == "pew" and obj2.myName == "firefox") or (obj1.myName == "firefox" and obj2.myName == "pew")) then
-                if (obj1.myName == "pew") then
-                    display.remove(obj1)
-                elseif (obj2.myName == "pew") then
-                    display.remove(obj2)
-                end
-            end
-            if (obj1.myName == "firefox") then
-                display.remove( obj1 )
-            elseif (obj2.myName == "firefox") then
-                display.remove( obj2 )
-            end
-            for i = #powerupTable, 1, -1 do
-                if ( powerupTable[i] == obj1 or powerupTable[i] == obj2 ) then
-                    table.remove( powerupTable, i )
-                    break
-                end
-            end
-            playernumber = 1
-            fireTime = 100
-            fireMode = 1
-            player:setSequence("firefox")
-            player:play()
-        elseif (( obj1.myName == "player" and obj2.myName == "safari" ) or ( obj1.myName == "safari" and obj2.myName == "player" ) or (obj1.myName == "pew" and obj2.myName == "safari") or (obj1.myName == "safari" and obj2.myName == "pew")) then
-            if ((obj1.myName == "pew" and obj2.myName == "safari") or (obj1.myName == "safari" and obj2.myName == "pew")) then
-                if (obj1.myName == "pew") then
-                    display.remove(obj1)
-                elseif (obj2.myName == "pew") then
-                    display.remove(obj2)
-                end
-            end
-            if (obj1.myName == "safari") then
-                display.remove( obj1 )
-            elseif (obj2.myName == "safari") then
-                display.remove( obj2 )
-            end
-            for i = #powerupTable, 1, -1 do
-                if ( powerupTable[i] == obj1 or powerupTable[i] == obj2 ) then
-                    table.remove( powerupTable, i )
-                    break
-                end
-            end
-            playernumber = 1
-            fireTime = 50
-            fireMode = 1
-            player:setSequence("safari")
-            player:play()
-        end
-    end
-end
+-- Game Timers
+gameLoopTimer = timer.performWithDelay( time, gameLoop, 0 )
+shootTimer = timer.performWithDelay( fireTime, shootThings, 0 )
+spawnTimer = timer.performWithDelay( 1000, alreadySpawnedCount, 0 )
 
 --[[ Resets Everything
 local function resetGame()
@@ -563,11 +553,7 @@ function scene:show( event )
         player:addEventListener( "touch", startFire )
         player:addEventListener( "touch", movePlayer )
         -- Listen for collisions
-        Runtime:addEventListener( "collision", onCollision )
-        -- Game Timers
-        gameLoopTimer = timer.performWithDelay( time, gameLoop, 0 )
-        shootTimer = timer.performWithDelay( fireTime, fireShit, 0 )
-        spawnTimer = timer.performWithDelay( 1500, alreadySpawnedCount, 0 )
+        -- Runtime:addEventListener( "collision", onCollision )
 	end
 end
 
