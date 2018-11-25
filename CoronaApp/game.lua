@@ -266,11 +266,11 @@ local function createObstacles()
     local newObstacle
     local newPowerup
     local powerUpNumber = math.random( 2, 6 )
-    local rand1 = math.random( level * 50, level * 100 )
-    local rand2 = math.random( level * -100, level * -50 )
+    local rand1 = math.random( level * 25, level * 75 )
+    local rand2 = math.random( level * -75, level * -25 )
     local rand3 = math.random( level * 2, level * 50 )
     local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
-    if (whoDis >= 10 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
+    if (whoDis >= 60 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
         physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5} )
@@ -423,7 +423,7 @@ local function gameLoop()
     -- This will be useful soon... 
     local newGame = true
     -- Performs Game Loop if not deaded.
-    if (gameOver == false) then
+    if (gameOver == false and died == false) then
         -- Create new obstacle
         -- createObstacles()
         --
