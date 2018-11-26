@@ -122,11 +122,23 @@ local powerUpOptions =
 {
     frames =
     {
-        { -- 1) Add Lives (Lua)
-
+        { -- 1) Opera Shield
+            x = 0,
+            y = 0,
+            width = 200,
+            height = 63
         },
         { -- 2) Slow "Time" (Java)
-            
+            x = 0,
+            y = 64,
+            width = 200,
+            height = 200,
+        },
+        { -- 3) Add Lives (Lua)
+            x = 0,
+            y = 265,
+            width = 200, 
+            height = 270,
         }
     }
 }
@@ -233,6 +245,18 @@ local function onPowerupCollision( self, event )
             fireMode = 1
             player:setSequence("opera")
             player:play()
+            shieldl = display.newImageRect(mainGroup, powerUps, 1, 200, 10)
+            shieldl.x = player.x - 50
+            shieldl.y = player.y + 50
+            shieldl.rotation = 15
+            shieldr = display.newImageRect(mainGroup, powerUps, 1, 200, 10)
+            shieldr.x = player.x + 50
+            shieldr.y = player.y + 50
+            shieldr.rotation = 345
+            physics.addBody( shieldl, "dynamic" )
+            physics.addBody( shieldr, "dynamic" )
+            shieldl.myName = "shield"
+            shieldr.myName = "shield"
             shootTimer._delay = fireTime
         elseif (self.myName == "edge") then
             playernumber = 4
@@ -405,11 +429,23 @@ local function movePlayer( event )
         -- Store initial offset position
         player.touchOffsetX = event.x - player.x
         player.touchOffsetY = event.y - player.y
+        if (playernumber == 3) then
+            shieldl.touchOffsetX = event.x - shieldl.x
+            shieldl.touchOffsetY = event.y - shieldl.y
+            shieldr.touchOffsetX = event.x - shieldr.x
+            shieldr.touchOffsetY = event.y - shieldr.y
+        end
         shooting = true
     elseif ( "moved" == phase ) then
         -- Move the player to the new touch position
         player.x = event.x - player.touchOffsetX
         player.y = event.y - player.touchOffsetY
+        if (playernumber == 3) then
+            shieldl.x = event.x - shieldl.touchOffsetX
+            shieldl.y = event.y - shieldl.touchOffsetY
+            shieldr.x = event.x - shieldr.touchOffsetX
+            shieldr.y = event.y - shieldr.touchOffsetY
+        end
     elseif ( "ended" == phase or "cancelled" == phase ) then
         -- Release touch focus on the player
         display.currentStage:setFocus( nil )
