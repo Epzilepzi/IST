@@ -585,7 +585,7 @@ function scene:create( event )
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
     -- Load the background
-    local background = display.newImageRect( veryBackGroup, "assets/images/xp.png", 4510, 3627 )
+    local background = display.newImageRect( veryBackGroup, "assets/images/xp.jpg", 4510, 3627 )
     background.x = display.contentCenterX
     background.y = display.contentCenterY  
 
