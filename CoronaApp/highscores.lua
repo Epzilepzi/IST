@@ -45,6 +45,10 @@ local function saveScores()
     end
 end
 
+local function gotoMenu()
+    composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+end
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -71,47 +75,51 @@ function scene:create( event )
 	-- Save the scores
 	saveScores()
 
+	local background = display.newImageRect( sceneGroup, "assets/images/highscores.jpg", 4510, 3627 )
+    background.x = display.contentCenterX
+    background.y = display.contentCenterY
+     
+	local highScoresHeader = display.newText( sceneGroup, "High Scores", display.contentCenterX, 150, native.systemFont, 144 )
+
+	local backToMenu = display.newText( sceneGroup, "Back to Menu", display.contentCenterX, display.contentHeight - 100, native.systemFont, 72 )
+	backToMenu:addEventListener( "tap", gotoMenu )
+
+	for i = 1, 10 do
+        if ( scoresTable[i] ) then
+            local yPos = 300 + ( i * 120 )
+ 
+            local rankNum = display.newText( sceneGroup, i .. ")", display.contentCenterX-50, yPos, native.systemFont, 72, center )
+            -- rankNum:setFillColor( 0.8 )
+            rankNum.anchorX = 1
+ 
+            local thisScore = display.newText( sceneGroup, scoresTable[i], display.contentCenterX-30, yPos, native.systemFont, 72, center )
+            thisScore.anchorX = 0
+        end
+    end
 end
 
 
 -- show()
 function scene:show( event )
-
 	local sceneGroup = self.view
 	local phase = event.phase
-
-	if ( phase == "will" ) then
-		-- Code here runs when the scene is still off screen (but is about to come on screen)
-
-	elseif ( phase == "did" ) then
-		-- Code here runs when the scene is entirely on screen
-
-	end
 end
 
 
 -- hide()
 function scene:hide( event )
-
 	local sceneGroup = self.view
 	local phase = event.phase
-
-	if ( phase == "will" ) then
-		-- Code here runs when the scene is on screen (but is about to go off screen)
-
-	elseif ( phase == "did" ) then
-		-- Code here runs immediately after the scene goes entirely off screen
-
+	if ( phase == "did" ) then
+		-- Removes scene when going to new scene
+		composer.removeScene( "highscores" )
 	end
 end
 
 
 -- destroy()
 function scene:destroy( event )
-
 	local sceneGroup = self.view
-	-- Code here runs prior to the removal of scene's view
-
 end
 
 
