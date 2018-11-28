@@ -27,7 +27,7 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	local background = display.newImageRect( sceneGroup, "assets/images/background.png", 1800, 3200 )
+	local background = display.newImageRect( sceneGroup, "assets/images/background.png", 4510, 3627 )
     background.x = display.contentCenterX
 	background.y = display.contentCenterY
 	

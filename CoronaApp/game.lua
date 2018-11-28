@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- main.lua
+-- game.lua
 --
 -----------------------------------------------------------------------------------------
 
@@ -9,17 +9,11 @@ local composer = require( "composer" )
  
 local scene = composer.newScene()
 
--- Load Difficulty Settings
-require( "difficulty" )
-local minTime = 1
-
 -- Physics Engine
 local physics = require( "physics" )
 physics.start()
 physics.setGravity( 0, 0 )
 
--- Initialize variables
-local score = composer.getVariable( "finalScore" )
 local died = false
 local gameOver = false
  
@@ -39,25 +33,37 @@ local scoreText
 local levelText
 local shootTimer
 
+local difficulty = composer.getVariable( "difficulty" )
+
+-- Game Values (To be loaded based on difficulty settings)
+
+local minTime = composer.getVariable("minTime")
+
 -- HUD
-local lives = 3
+local lives = composer.getVariable("lives")
 local score = 0
-local level = 10
+local level = 1
 
 -- Set Game Timer
-local time = 500
-local powerupTime = 5000
-local fireTime = 100
-local fireMode = 1
+local time = composer.getVariable("time")
+local powerupTime = composer.getVariable("powerupTime")
+local fireTime = composer.getVariable("fireTime")
+local fireMode = composer.getVariable("fireMode")
 
 -- PowerUp Settings
 local alreadySpawned = 0
-local playernumber = 1
-local shieldHealth = 100
+local playernumber = composer.getVariable("playernumber")
+local shieldHealth = composer.getVariable("shieldHealth")
 
 -- "Fun"
 local missed = 0
 local randomPosition = math.random( 700 )
+
+-- Spawn Speeds and Settings
+local rand1 = math.random( level * 25, level * 75 )
+local rand2 = math.random( level * -75, level * -25 )
+local rand3 = math.random( level * 2, level * 25 )
+local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
 
 -- Load Assets
 local objectSheetOptions =
@@ -183,6 +189,7 @@ local function shieldCollision( self, event )
     end
 end
 
+-- Function which enables the Opera shield
 local function opera()
     playernumber = 3
     fireTime = 200
@@ -200,6 +207,13 @@ local function opera()
     physics.addBody(shield, "static")
 end
 
+-- YOU DIED
+local function endGame()
+    composer.setVariable( "finalScore", score )
+    composer.gotoScene( "highscores", { time=800, effect="crossFade" } )
+end
+
+-- When something collides with an enemy
 local function onEnemyCollision( self, event )
     local other = event.other
     if (event.other.myName == "pew") then 
@@ -218,9 +232,14 @@ local function onEnemyCollision( self, event )
             -- Level Up
             level = level + 1
             levelText.text = "Level: " .. level
+            print("Level: " .. level)
+            print("Rand1 Speed: " .. rand1)
+            print("Rand2 Speed: " .. rand2)
+            print("Rand3 Speed: " .. rand3)
             -- Make Game Run Faster
             if (time - 5 >= minTime) then
                 time = time - 5
+                print("Timer Speed: ".. time)
                 gameLoopTimer._delay = time
             else 
                 time = minTime
@@ -237,6 +256,7 @@ local function onEnemyCollision( self, event )
                 display.remove(other)
                 -- timer.performWithDelay( 2000, endGame )
                 gameOver = true
+                endGame()
             else
                 player.alpha = 0
                 timer.performWithDelay(1000, restorePlayer)
@@ -308,10 +328,6 @@ local function createObstacles()
     local newObstacle
     local newPowerup
     local powerUpNumber = math.random( 2, 6 )
-    local rand1 = math.random( level * 25, level * 75 )
-    local rand2 = math.random( level * -75, level * -25 )
-    local rand3 = math.random( level * 2, level * 50 )
-    local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
     if (whoDis >= 60 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
@@ -466,8 +482,6 @@ end
 
 -- Game Loop
 local function gameLoop()
-    -- This will be useful soon... 
-    local newGame = true
     -- Performs Game Loop if not deaded.
     if (gameOver == false and died == false) then
         -- Create new obstacle
@@ -518,27 +532,10 @@ local function gameLoop()
     end
 end
 
-local function endGame()
-    composer.setVariable( "finalScore", score )
-    composer.gotoScene( "gameOver", { time=800, effect="crossFade" } )
-end
-
 -- Game Timers
 gameLoopTimer = timer.performWithDelay( time, gameLoop, 0 )
 shootTimer = timer.performWithDelay( fireTime, shootThings, 0 )
 spawnTimer = timer.performWithDelay( 1000, alreadySpawnedCount, 0 )
-
---[[ Resets Everything
-local function resetGame()
-    score = 0
-    level = 1
-    lives = 3
-    fireTime = 100
-    died = false
-    time = 500
-    powerupTime = 5000
-end
---]]
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -562,7 +559,7 @@ function scene:create( event )
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
     -- Load the background
-    local background = display.newImageRect( backGroup, "assets/images/background.png", 1800, 3200 )
+    local background = display.newImageRect( backGroup, "assets/images/background.png", 4510, 3627 )
     background.x = display.contentCenterX
     background.y = display.contentCenterY  
 
@@ -617,10 +614,9 @@ function scene:hide( event )
         timer.cancel( spawnTimer )
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
-        player:removeEventListener( "touch", startFire )
-        player:removeEventListener( "touch", movePlayer )
-        Runtime:removeEventListener( "collision", onCollision )
         physics.pause()
+        mainGroup:removeSelf()
+        mainGroup = nil
     end
 
 end
