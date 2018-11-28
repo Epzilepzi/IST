@@ -5,104 +5,27 @@ local scene = composer.newScene()
 
 local difficulty = 2
 
--- -----------------------------------------------------------------------------------
--- Code outside of the scene event functions below will only be executed ONCE unless
--- the scene is removed entirely (not recycled) via "composer.removeScene()"
--- -----------------------------------------------------------------------------------
-
-local function gotoGame()
-    -- Set Up Global Variables for Game
-	composer.setVariable("difficulty", difficulty)
-	composer.setVariable("minTime", minTime)
-	composer.setVariable("lives", lives)
-	composer.setVariable("time", gameTime)
-	composer.setVariable("powerupTime", powerupTime)
-	composer.setVariable("fireTime", fireTime)
-	composer.setVariable("fireMode", fireMode)
-	composer.setVariable("playernumber", playernumber)
-    composer.setVariable("shieldHealth", shieldHealth)
-    print(composer.getVariable("difficulty"))
-    print(composer.getVariable("minTime"))
-    print(composer.getVariable("lives"))
-    print(composer.getVariable("time"))
-    print(composer.getVariable("powerupTime"))
-    print(composer.getVariable("fireTime"))
-    print(composer.getVariable("fireMode"))
-    print(composer.getVariable("playernumber"))
-    print(composer.getVariable("shieldHealth"))
-	composer.gotoScene("game", { time=500, effect="crossFade" })
-end
-
--- Setup Difficulty Settings
-local function setUpGame()
-    if (difficulty == 1) then
-        -- Load Difficulty Settings
-        minTime = 200
-
-        -- HUD
-        lives = 3
-
-        -- Set Game Timer
-        gameTime = 500
-        powerupTime = 3000
-        fireTime = 100
-        fireMode = 1
-
-        -- PowerUp Settings
-        playernumber = 1
-        shieldHealth = 200
-    elseif (difficulty == 2) then
-        -- Load Difficulty Settings
-        minTime = 100
-
-        -- HUD
-        lives = 3
-
-        -- Set Game Timer
-        gameTime = 400
-        powerupTime = 5000
-        fireTime = 100
-        fireMode = 1
-
-        -- PowerUp Settings
-        playernumber = 1
-        shieldHealth = 100
-    elseif (difficulty == 3) then
-        -- Load Difficulty Settings
-        minTime = 150
-
-        -- HUD
-        lives = 3
-
-        -- Set Game Timer
-        gameTime = 300
-        powerupTime = 5000
-        fireTime = 100
-        fireMode = 1
-
-        -- PowerUp Settings
-        playernumber = 1
-        shieldHealth = 50
-	end
-	gotoGame()
+local function nextStep()
+    composer.setVariable("difficulty", difficulty)
+    composer.gotoScene("highscores", { time=500, effect="crossFade" })
 end
 
 local function easy()
     difficulty = 1
-    setUpGame()
     print("Difficulty: " .. difficulty)
+    nextStep()
 end
 
 local function normal()
     difficulty = 2
-    setUpGame()
     print("Difficulty: " .. difficulty)
+    nextStep()
 end
 
 local function hard()
     difficulty = 3
-    setUpGame()
     print("Difficulty: " .. difficulty)
+    nextStep()
 end
 
 -- -----------------------------------------------------------------------------------
@@ -171,7 +94,7 @@ end
 function scene:destroy( event )
 
     local sceneGroup = self.view
-    composer.removeScene( "difficulty" )
+    composer.removeScene( "highscoresDifficulty" )
 	-- Code here runs prior to the removal of scene's view
 
 end

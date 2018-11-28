@@ -15,7 +15,7 @@ local function gotoDiff()
 end
  
 local function gotoHighScores()
-    composer.gotoScene( "highscores", { time=800, effect="crossFade" } )
+    composer.gotoScene( "highscoreDifficulty", { time=800, effect="crossFade" } )
 end
 
 -- -----------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	local background = display.newImageRect( sceneGroup, "assets/images/background.png", 4510, 3627 )
+	local background = display.newImageRect( sceneGroup, "assets/images/menu.jpg", 4510, 3627 )
     background.x = display.contentCenterX
 	background.y = display.contentCenterY
 	
@@ -84,6 +84,7 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	composer.removeScene( "menu" )
 
 end
 

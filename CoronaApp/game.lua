@@ -18,6 +18,7 @@ local died = false
 local gameOver = false
  
 -- Initialize display groups
+local veryBackGroup
 local backGroup
 local mainGroup 
 local uiGroup 
@@ -54,6 +55,7 @@ local fireMode = composer.getVariable("fireMode")
 local alreadySpawned = 0
 local playernumber = composer.getVariable("playernumber")
 local shieldHealth = composer.getVariable("shieldHealth")
+local java = false
 
 -- "Fun"
 local missed = 0
@@ -324,7 +326,18 @@ local function createObstacles()
     local rand1
     local rand2
     local rand3
-    if (difficulty == 1) then
+    if (java == true) then
+        if (difficulty == 1) then
+            randomPosition = math.random( 500 )
+        elseif (difficulty == 2) then
+            randomPosition = math.random( 700 )
+        elseif (difficulty == 3) then
+            randomPosition = math.random( 900 )
+        end
+        rand1 = 100
+        rand2 = -100
+        rand3 = 25
+    elseif (difficulty == 1) then
         randomPosition = math.random( 500 )
         rand1 = math.random( level * 10, level * 50 )
         rand2 = math.random( level * -50, level * -10 )
@@ -501,18 +514,14 @@ local function gameLoop()
         -- Create new obstacle
         -- createObstacles()
         --
-        if (level <= 10) then
+        if (level < 10) then
             createObstacles()
             randomPosition = math.random( 1200 )
         elseif (level >= 10) then
             createObstacles()
             createObstacles()
+            
         elseif (level >= 20) then
-            createObstacles()
-            createObstacles()
-            createObstacles()
-        elseif (level >= 30) then
-            createObstacles()
             createObstacles()
             createObstacles()
             createObstacles()
@@ -563,8 +572,11 @@ function scene:create( event )
     physics.pause()
 
     -- Set up display groups
-    backGroup = display.newGroup()  -- Display group for the background image
+    backGroup = display.newGroup()  -- Display group for the dynamic background image(s)
     sceneGroup:insert( backGroup )  -- Insert into the scene's view group
+
+    veryBackGroup = display.newGroup()  -- Display group for the initial background image
+    sceneGroup:insert( veryBackGroup )  -- Insert into the scene's view group
  
     mainGroup = display.newGroup()  -- Display group for the ship, asteroids, lasers, etc.
     sceneGroup:insert( mainGroup )  -- Insert into the scene's view group
@@ -573,7 +585,7 @@ function scene:create( event )
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
     -- Load the background
-    local background = display.newImageRect( backGroup, "assets/images/background.png", 4510, 3627 )
+    local background = display.newImageRect( veryBackGroup, "assets/images/xp.png", 4510, 3627 )
     background.x = display.contentCenterX
     background.y = display.contentCenterY  
 
