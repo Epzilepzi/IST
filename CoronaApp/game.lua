@@ -57,13 +57,6 @@ local shieldHealth = composer.getVariable("shieldHealth")
 
 -- "Fun"
 local missed = 0
-local randomPosition = math.random( 700 )
-
--- Spawn Speeds and Settings
-local rand1 = math.random( level * 25, level * 75 )
-local rand2 = math.random( level * -75, level * -25 )
-local rand3 = math.random( level * 2, level * 25 )
-local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
 
 -- Load Assets
 local objectSheetOptions =
@@ -207,10 +200,14 @@ local function opera()
     physics.addBody(shield, "static")
 end
 
+local function highScores()
+    composer.gotoScene( "highscores", { time=800, effect="crossFade" } )
+end
+
 -- YOU DIED
 local function endGame()
     composer.setVariable( "finalScore", score )
-    composer.gotoScene( "highscores", { time=800, effect="crossFade" } )
+    timer.performWithDelay(1000, highScores, 1)
 end
 
 -- When something collides with an enemy
@@ -233,13 +230,9 @@ local function onEnemyCollision( self, event )
             level = level + 1
             levelText.text = "Level: " .. level
             print("Level: " .. level)
-            print("Rand1 Speed: " .. rand1)
-            print("Rand2 Speed: " .. rand2)
-            print("Rand3 Speed: " .. rand3)
             -- Make Game Run Faster
             if (time - 5 >= minTime) then
                 time = time - 5
-                print("Timer Speed: ".. time)
                 gameLoopTimer._delay = time
             else 
                 time = minTime
@@ -327,6 +320,27 @@ local function createObstacles()
     local whereFrom = math.random( 4 )
     local newObstacle
     local newPowerup
+    local randomPosition
+    local rand1
+    local rand2
+    local rand3
+    if (difficulty == 1) then
+        randomPosition = math.random( 500 )
+        rand1 = math.random( level * 10, level * 50 )
+        rand2 = math.random( level * -50, level * -10 )
+        rand3 = math.random( level * 2, level * 15 )
+    elseif (difficulty == 2) then
+        randomPosition = math.random( 700 )
+        rand1 = math.random( level * 25, level * 75 )
+        rand2 = math.random( level * -75, level * -25 )
+        rand3 = math.random( level * 2, level * 25 )
+    elseif (difficulty == 3) then
+        randomPosition = math.random( 900 )
+        rand1 = math.random( level * 50, level * 100 )
+        rand2 = math.random( level * -100, level * -50 )
+        rand3 = math.random( level * 10, level * 50 )
+    end
+    local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
     local powerUpNumber = math.random( 2, 6 )
     if (whoDis >= 60 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
@@ -366,7 +380,7 @@ local function createObstacles()
         elseif (powerUpNumber == 6) then
             newPowerup.myName = "safari"
         end
-        print(newPowerup.myName)
+        print("Powerup: " .. newPowerup.myName)
         if (whereFrom == 1) then
             newPowerup.x = -60
             newPowerup.y = math.random ( 800 )
@@ -515,7 +529,7 @@ local function gameLoop()
             missed = missed + 1
             display.remove( thisBoi )
             table.remove( obstacleTable, i )
-            print("Enemies Missed: "..missed)
+            print("Enemies Missed: " .. missed)
         end
     end
     -- Remove powerups which have drifted off into oblivion.
@@ -615,8 +629,7 @@ function scene:hide( event )
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
         physics.pause()
-        mainGroup:removeSelf()
-        mainGroup = nil
+        composer.removeScene( "game" )
     end
 
 end

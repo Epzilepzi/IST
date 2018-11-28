@@ -37,7 +37,7 @@ end
 local function setUpGame()
     if (difficulty == 1) then
         -- Load Difficulty Settings
-        minTime = 50
+        minTime = 200
 
         -- HUD
         lives = 3
@@ -53,7 +53,7 @@ local function setUpGame()
         shieldHealth = 200
     elseif (difficulty == 2) then
         -- Load Difficulty Settings
-        minTime = 1
+        minTime = 100
 
         -- HUD
         lives = 3
@@ -67,8 +67,42 @@ local function setUpGame()
         -- PowerUp Settings
         playernumber = 1
         shieldHealth = 100
+    elseif (difficulty == 3) then
+        -- Load Difficulty Settings
+        minTime = 150
+
+        -- HUD
+        lives = 3
+
+        -- Set Game Timer
+        gameTime = 300
+        powerupTime = 5000
+        fireTime = 100
+        fireMode = 1
+
+        -- PowerUp Settings
+        playernumber = 1
+        shieldHealth = 50
 	end
 	gotoGame()
+end
+
+local function easy()
+    difficulty = 1
+    setUpGame()
+    print("Difficulty: " .. difficulty)
+end
+
+local function normal()
+    difficulty = 2
+    setUpGame()
+    print("Difficulty: " .. difficulty)
+end
+
+local function hard()
+    difficulty = 3
+    setUpGame()
+    print("Difficulty: " .. difficulty)
 end
 
 -- -----------------------------------------------------------------------------------
@@ -86,10 +120,17 @@ function scene:create( event )
 
 	local header = display.newText( sceneGroup, "Select Difficulty", display.contentCenterX, 150, native.systemFont, 144 )
 
-	local playButton = display.newText( sceneGroup, "Play", display.contentCenterX, display.contentCenterY, native.systemFont, 88 )
-    playButton:setFillColor( 0.82, 0.86, 1 )
+    local easyButton = display.newText( sceneGroup, "Easy", display.contentCenterX, display.contentCenterY - 150, native.systemFont, 100 )
+    easyButton:setFillColor( 1 )
+    easyButton:addEventListener( "tap", easy )
 
-	playButton:addEventListener( "tap", setUpGame )
+	local normalButton = display.newText( sceneGroup, "Normal", display.contentCenterX, display.contentCenterY, native.systemFont, 100 )
+    normalButton:setFillColor( 1 )
+    normalButton:addEventListener( "tap", normal )
+
+    local hardButton = display.newText( sceneGroup, "Hard", display.contentCenterX, display.contentCenterY + 150, native.systemFont, 100 )
+    hardButton:setFillColor( 1 )
+    hardButton:addEventListener( "tap", hard )
 	
 end
 
