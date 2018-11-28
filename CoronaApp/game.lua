@@ -57,37 +57,13 @@ local shieldHealth = composer.getVariable("shieldHealth")
 
 -- "Fun"
 local missed = 0
-local randomPosition
+local randomPosition = math.random( 700 )
 
--- Speeds
-local rand1
-local rand2
-local rand3
+-- Spawn Speeds and Settings
+local rand1 = math.random( level * 25, level * 75 )
+local rand2 = math.random( level * -75, level * -25 )
+local rand3 = math.random( level * 2, level * 25 )
 local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
-
-local firstRun = 1
-
-local function setRand()
-    if (difficulty == 1) then
-        -- "Fun"
-        randomPosition = math.random( 500 )
-
-        -- Spawn Speeds and Settings
-        rand1 = math.random( level * 10, level * 50 )
-        rand2 = math.random( level * -50, level * -10 )
-        rand3 = math.random( level * 2, level * 25 )
-    elseif (difficulty == 2) then
-        -- "Fun"
-        randomPosition = math.random( 700 )
-
-        -- Spawn Speeds and Settings
-        rand1 = math.random( level * 25, level * 75 )
-        rand2 = math.random( level * -75, level * -25 )
-        rand3 = math.random( level * 2, level * 25 )
-    end
-end
-
-setRand()
 
 -- Load Assets
 local objectSheetOptions =
@@ -256,9 +232,14 @@ local function onEnemyCollision( self, event )
             -- Level Up
             level = level + 1
             levelText.text = "Level: " .. level
+            print("Level: " .. level)
+            print("Rand1 Speed: " .. rand1)
+            print("Rand2 Speed: " .. rand2)
+            print("Rand3 Speed: " .. rand3)
             -- Make Game Run Faster
             if (time - 5 >= minTime) then
                 time = time - 5
+                print("Timer Speed: ".. time)
                 gameLoopTimer._delay = time
             else 
                 time = minTime
@@ -501,10 +482,6 @@ end
 
 -- Game Loop
 local function gameLoop()
-    if (firstRun == 1) then
-        firstRun = 0
-        setRand()
-    end
     -- Performs Game Loop if not deaded.
     if (gameOver == false and died == false) then
         -- Create new obstacle
@@ -638,6 +615,8 @@ function scene:hide( event )
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
         physics.pause()
+        mainGroup:removeSelf()
+        mainGroup = nil
     end
 
 end

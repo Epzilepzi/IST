@@ -11,30 +11,39 @@ local difficulty = 2
 -- -----------------------------------------------------------------------------------
 
 local function gotoGame()
-	composer.gotoScene("game", { time=500, effect="crossFade" })
-	-- Set Up Global Variables for Game
+    -- Set Up Global Variables for Game
 	composer.setVariable("difficulty", difficulty)
 	composer.setVariable("minTime", minTime)
 	composer.setVariable("lives", lives)
-	composer.setVariable("time", time)
+	composer.setVariable("time", gameTime)
 	composer.setVariable("powerupTime", powerupTime)
 	composer.setVariable("fireTime", fireTime)
 	composer.setVariable("fireMode", fireMode)
 	composer.setVariable("playernumber", playernumber)
     composer.setVariable("shieldHealth", shieldHealth)
+    print(composer.getVariable("difficulty"))
+    print(composer.getVariable("minTime"))
+    print(composer.getVariable("lives"))
+    print(composer.getVariable("time"))
+    print(composer.getVariable("powerupTime"))
+    print(composer.getVariable("fireTime"))
+    print(composer.getVariable("fireMode"))
+    print(composer.getVariable("playernumber"))
+    print(composer.getVariable("shieldHealth"))
+	composer.gotoScene("game", { time=500, effect="crossFade" })
 end
 
 -- Setup Difficulty Settings
 local function setUpGame()
     if (difficulty == 1) then
         -- Load Difficulty Settings
-        minTime = 200
+        minTime = 50
 
         -- HUD
         lives = 3
 
         -- Set Game Timer
-        time = 500
+        gameTime = 500
         powerupTime = 3000
         fireTime = 100
         fireMode = 1
@@ -44,13 +53,13 @@ local function setUpGame()
         shieldHealth = 200
     elseif (difficulty == 2) then
         -- Load Difficulty Settings
-        minTime = 100
+        minTime = 1
 
         -- HUD
         lives = 3
 
         -- Set Game Timer
-        time = 500
+        gameTime = 400
         powerupTime = 5000
         fireTime = 100
         fireMode = 1
