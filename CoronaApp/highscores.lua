@@ -3,19 +3,46 @@ local composer = require( "composer" )
 
 local scene = composer.newScene()
 
-composer.setVariable( "finalScore", 0 )
-
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-local function gotoDiff()
-    composer.gotoScene( "difficulty", { time=500, effect="crossFade" } )
-end
+-- Initialize variables
+local json = require( "json" )
  
-local function gotoHighScores()
-    composer.gotoScene( "highscores", { time=800, effect="crossFade" } )
+local scoresTable = {}
+ 
+-- Accesses stored scores in JSON file
+local filePath = system.pathForFile( "scores.json", system.DocumentsDirectory )
+
+local function loadScores()
+ 
+    local file = io.open( filePath, "r" )
+ 
+    if file then
+        local contents = file:read( "*a" )
+        io.close( file )
+        scoresTable = json.decode( contents )
+    end
+ 
+    if ( scoresTable == nil or #scoresTable == 0 ) then
+        scoresTable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    end
+end
+
+local function saveScores()
+ 
+    for i = #scoresTable, 11, -1 do
+        table.remove( scoresTable, i )
+    end
+ 
+    local file = io.open( filePath, "w" )
+ 
+    if file then
+        file:write( json.encode( scoresTable ) )
+        io.close( file )
+    end
 end
 
 -- -----------------------------------------------------------------------------------
@@ -27,27 +54,27 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	local background = display.newImageRect( sceneGroup, "assets/images/background.png", 1800, 3200 )
-    background.x = display.contentCenterX
-	background.y = display.contentCenterY
-	
-	local title = display.newImageRect( sceneGroup, "assets/images/title.png", 1000, 160 )
-    title.x = display.contentCenterX
-	title.y = 400
-	
-	local playButton = display.newText( sceneGroup, "Play", display.contentCenterX, display.contentCenterY, native.systemFont, 88 )
-    playButton:setFillColor( 0.82, 0.86, 1 )
- 
-    local highScoresButton = display.newText( sceneGroup, "High Scores", display.contentCenterX, display.contentHeight - 100, native.systemFont, 88 )
-    highScoresButton:setFillColor( 0.75, 0.78, 1 )
 
-	playButton:addEventListener( "tap", gotoDiff )
-	highScoresButton:addEventListener( "tap", gotoHighScores )
+	-- Load the previous scores
+    loadScores()
+     
+    -- Insert the saved score from the last game into the table, then reset it
+    table.insert( scoresTable, composer.getVariable( "finalScore" ) )
+	composer.setVariable( "finalScore", 0 )
 	
+	-- Sort the table entries from highest to lowest
+    local function compare( a, b )
+        return a > b
+    end
+	table.sort( scoresTable, compare )
+	
+	-- Save the scores
+	saveScores()
+
 end
 
 
---[[ show()
+-- show()
 function scene:show( event )
 
 	local sceneGroup = self.view
@@ -77,7 +104,7 @@ function scene:hide( event )
 
 	end
 end
-]]--
+
 
 -- destroy()
 function scene:destroy( event )

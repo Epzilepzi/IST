@@ -19,7 +19,7 @@ physics.start()
 physics.setGravity( 0, 0 )
 
 -- Initialize variables
-local score = 0
+local score = composer.getVariable( "finalScore" )
 local died = false
 local gameOver = false
  
@@ -42,7 +42,7 @@ local shootTimer
 -- HUD
 local lives = 3
 local score = 0
-local level = 1
+local level = 10
 
 -- Set Game Timer
 local time = 500
@@ -53,6 +53,7 @@ local fireMode = 1
 -- PowerUp Settings
 local alreadySpawned = 0
 local playernumber = 1
+local shieldHealth = 100
 
 -- "Fun"
 local missed = 0
@@ -71,47 +72,47 @@ local objectSheetOptions =
         },
         {   -- 2) Firefox
             x = 0,
-            y = 301,
+            y = 300,
             width = 300,
             height = 300,
         },
         {   -- 3) Chrome
             x = 0,
-            y = 602,
+            y = 600,
             width = 300,
             height = 300,
         },
         {   -- 4) Opera
             x = 0,
-            y = 903,
+            y = 900,
             width = 300,
             height = 300,
         },
         {
             -- 5) Edge
             x = 0,
-            y = 1204,
+            y = 1200,
             width = 300,
             height = 300,
         },
         {
             -- 6) Safari
             x = 0,
-            y = 2553,
+            y = 2546,
             width = 300,
             height = 300,
         },
         {
             -- 7) SQL
             x = 0,
-            y = 1505,
+            y = 1500,
             width = 300,
             height = 524,
         },
         {
             -- 8) Javascript
             x = 0,
-            y = 2030,
+            y = 2024,
             width = 300,
             height = 522
         }
@@ -170,6 +171,35 @@ local function restorePlayer()
     } )
 end
 
+local function shieldCollision( self, event )
+    local other = event.other
+    print("Shield Health: " .. shieldHealth)
+    if (other.myName == "ie11") then
+        if (shieldHealth > 0) then
+            shieldHealth = shieldHealth - 5
+        else
+            display.remove(self)
+        end
+    end
+end
+
+local function opera()
+    playernumber = 3
+    fireTime = 200
+    fireMode = 1
+    player:setSequence("opera")
+    player:play()
+    shootTimer._delay = fireTime
+    shield = display.newImageRect(mainGroup, powerUps, 1, 300, 100)
+    shield.x = player.x
+    shield.y = player.y - 150
+    shield.myName = "shield"
+    shield.collision = shieldCollision
+    shield:addEventListener( "collision" )
+    shieldHealth = 100
+    physics.addBody(shield, "static")
+end
+
 local function onEnemyCollision( self, event )
     local other = event.other
     if (event.other.myName == "pew") then 
@@ -217,67 +247,55 @@ end
 
 local function onPowerupCollision( self, event )
     local other = event.other
-    if (event.other.myName == "pew" or event.other.myName == "player") then
-        display.remove(self)
-        score = score + 200
-        -- Removes event.other if it is pew
-        if (event.other.myName == "pew") then
-            display.remove(other)
-        end
-        -- Check what type of powerup self is.
-        if (self.myName == "firefox") then
-            playernumber = 1
-            fireTime = 100
-            fireMode = 1
-            player:setSequence("firefox")
-            player:play()
-            shootTimer._delay = fireTime
-        elseif (self.myName == "chrome") then
-            playernumber = 2
-            fireTime = 500
-            fireMode = 2
-            player:setSequence("chrome")
-            player:play()
-            shootTimer._delay = fireTime
-        elseif (self.myName == "opera") then
-            playernumber = 3
-            fireTime = 200
-            fireMode = 1
-            player:setSequence("opera")
-            player:play()
-            shieldl = display.newImageRect(mainGroup, powerUps, 1, 200, 10)
-            shieldl.x = player.x - 50
-            shieldl.y = player.y + 50
-            shieldl.rotation = 15
-            shieldr = display.newImageRect(mainGroup, powerUps, 1, 200, 10)
-            shieldr.x = player.x + 50
-            shieldr.y = player.y + 50
-            shieldr.rotation = 345
-            physics.addBody( shieldl, "dynamic" )
-            physics.addBody( shieldr, "dynamic" )
-            shieldl.myName = "shield"
-            shieldr.myName = "shield"
-            shootTimer._delay = fireTime
-        elseif (self.myName == "edge") then
-            playernumber = 4
-            fireTime = 100
-            fireMode = 1
-            player:setSequence("edge")
-            player:play()
-            shootTimer._delay = fireTime
-        elseif (self.myName == "safari") then
-            playernumber = 5
-            fireTime = 50
-            fireMode = 1
-            player:setSequence("safari")
-            player:play()
-            shootTimer._delay = fireTime
-        end
-        -- Removes Powerup from Table so it doesn't break game.
-        for i = #powerupTable, 1, -1 do
-            if ( powerupTable[i] == self ) then
-                table.remove( powerupTable, i )
-                break
+    if (playernumber == 3) then
+        display.remove(shield)
+    end
+    if (died == false) then
+        if (event.other.myName == "pew" or event.other.myName == "player") then
+            display.remove(self)
+            score = score + 200
+            -- Removes event.other if it is pew
+            if (event.other.myName == "pew") then
+                display.remove(other)
+            end
+            -- Check what type of powerup self is.
+            if (self.myName == "firefox") then
+                playernumber = 1
+                fireTime = 100
+                fireMode = 1
+                player:setSequence("firefox")
+                player:play()
+                shootTimer._delay = fireTime
+            elseif (self.myName == "chrome") then
+                playernumber = 2
+                fireTime = 350
+                fireMode = 2
+                player:setSequence("chrome")
+                player:play()
+                shootTimer._delay = fireTime
+            elseif (self.myName == "opera") then
+                timer.performWithDelay(5, opera, 1)
+            elseif (self.myName == "edge") then
+                playernumber = 4
+                fireTime = 100
+                fireMode = 1
+                player:setSequence("edge")
+                player:play()
+                shootTimer._delay = fireTime
+            elseif (self.myName == "safari") then
+                playernumber = 5
+                fireTime = 50
+                fireMode = 1
+                player:setSequence("safari")
+                player:play()
+                shootTimer._delay = fireTime
+            end
+            -- Removes Powerup from Table so it doesn't break game.
+            for i = #powerupTable, 1, -1 do
+                if ( powerupTable[i] == self ) then
+                    table.remove( powerupTable, i )
+                    break
+                end
             end
         end
     end
@@ -429,22 +447,14 @@ local function movePlayer( event )
         -- Store initial offset position
         player.touchOffsetX = event.x - player.x
         player.touchOffsetY = event.y - player.y
-        if (playernumber == 3) then
-            shieldl.touchOffsetX = event.x - shieldl.x
-            shieldl.touchOffsetY = event.y - shieldl.y
-            shieldr.touchOffsetX = event.x - shieldr.x
-            shieldr.touchOffsetY = event.y - shieldr.y
-        end
         shooting = true
     elseif ( "moved" == phase ) then
         -- Move the player to the new touch position
         player.x = event.x - player.touchOffsetX
         player.y = event.y - player.touchOffsetY
         if (playernumber == 3) then
-            shieldl.x = event.x - shieldl.touchOffsetX
-            shieldl.y = event.y - shieldl.touchOffsetY
-            shieldr.x = event.x - shieldr.touchOffsetX
-            shieldr.y = event.y - shieldr.touchOffsetY
+            shield.x = player.x
+            shield.y = player.y - 150
         end
     elseif ( "ended" == phase or "cancelled" == phase ) then
         -- Release touch focus on the player
@@ -509,6 +519,7 @@ local function gameLoop()
 end
 
 local function endGame()
+    composer.setVariable( "finalScore", score )
     composer.gotoScene( "gameOver", { time=800, effect="crossFade" } )
 end
 
@@ -551,7 +562,7 @@ function scene:create( event )
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
     -- Load the background
-    local background = display.newImageRect( backGroup, "assets/images/background.JPG", 1800, 3200 )
+    local background = display.newImageRect( backGroup, "assets/images/background.png", 1800, 3200 )
     background.x = display.contentCenterX
     background.y = display.contentCenterY  
 
@@ -569,7 +580,6 @@ function scene:create( event )
     livesText = display.newText( uiGroup, "Lives: " .. lives, display.contentCenterX + 360, 75, native.systemFont, 72, right )
     scoreText = display.newText( uiGroup, "Score: " .. score, display.contentCenterX, 150, native.systemFont, 72, center )
     levelText = display.newText( uiGroup, "Level: " .. level, display.contentCenterX - 360, 75, native.systemFont, 72 )
-
 end
 
 
