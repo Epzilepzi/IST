@@ -178,7 +178,7 @@ local function shieldCollision( self, event )
     if (other.myName == "ie11") then
         if (shieldHealth > 0) then
             shieldHealth = shieldHealth - 5
-        else
+        elseif (shieldHealth <= 0) then
             display.remove(self)
         end
     end
