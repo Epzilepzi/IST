@@ -130,7 +130,7 @@ local powerUpOptions =
             width = 200,
             height = 63
         },
-        { -- 2) Slow "Time" (Java)
+        { -- 2) Bad boi Java
             x = 0,
             y = 64,
             width = 200,
@@ -145,6 +145,21 @@ local powerUpOptions =
     }
 }
 
+local bingFrames = {
+    {   -- Bing Stage 1
+        x = 0,
+        y = 0,
+        width = 300,
+        height = 300
+    },
+    {   -- Bing Stage 2
+        x = 0,
+        y = 300,
+        width = 300,
+        height = 300
+    }
+}
+
 -- Index of Characters
 local characters =
 {
@@ -155,9 +170,17 @@ local characters =
     { name = "safari", start = 6, count = 1}
 }
 
+local bingStates =
+{
+    { name = "healthy", start = 1, count = 1 },
+    { name = "unhealthy", start = 2, count = 1 }
+}
+
 local objectSheet = graphics.newImageSheet( "assets/images/gameObjects.png", objectSheetOptions )
 local powerUps = graphics.newImageSheet( "assets/images/powerUps.png", powerUpOptions )
+local bings = graphics.newImageSheet( "assets/images/bingSheet.png", bingFrames )
 local background = "empty"
+local backdrop
 
 local function setBackground()
     local ran10 = false
@@ -167,18 +190,27 @@ local function setBackground()
     local ran50 = false
     if (background == "empty") then
         -- Load the background
-        background = display.newImageRect( veryBackGroup, "assets/images/xp.jpg", 2487, 2000 )
+        background = display.newImageRect( backGroup, "assets/images/xp.jpg", 2487, 2000 )
         background.x = display.contentCenterX
         background.y = display.contentCenterY 
     elseif (level == 10 and ran10 == false) then
-        local backdrop = display.newImageRect( backGroup, "assets/images/vista.jpg", 2487, 2000 )
+        backdrop = display.newImageRect( backGroup, "assets/images/vista.jpg", 2487, 2000 )
         backdrop.x = display.contentCenterX
         backdrop.y = display.contentCenterY 
         backdrop.alpha = 0
         transition.fadeIn( backdrop, { time=3000,
             onComplete = function()
                 display.remove(background)
-                background = backdrop
+            end
+        } )
+    elseif (level == 25 and ran20 == false) then
+        background = display.newImageRect( backGroup, "assets/images/7.jpg", 2487, 2000 )
+        background.x = display.contentCenterX
+        background.y = display.contentCenterY 
+        background.alpha = 0
+        transition.fadeIn( background, {
+            onComplete = function()
+                display.remove(backdrop)
             end
         } )
     end
@@ -637,8 +669,8 @@ function scene:create( event )
 
     -- Set up display groups
 
-    veryBackGroup = display.newGroup()  -- Display group for the initial background image
-    sceneGroup:insert( veryBackGroup )  -- Insert into the scene's view group
+    -- veryBackGroup = display.newGroup()  -- Display group for the initial background image
+    -- sceneGroup:insert( veryBackGroup )  -- Insert into the scene's view group
 
     backGroup = display.newGroup()  -- Display group for the dynamic background image(s)
     sceneGroup:insert( backGroup )  -- Insert into the scene's view group
