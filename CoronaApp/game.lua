@@ -235,9 +235,11 @@ local function onEnemyCollision( self, event )
             -- Make Game Run Faster
             if (time - 5 >= minTime) then
                 time = time - 5
+                composer.setVariable("time",time)
                 gameLoopTimer._delay = time
             else 
                 time = minTime
+                composer.setVariable("time",time)
                 gameLoopTimer._delay = time
             end
         end
@@ -262,9 +264,6 @@ end
 
 local function onPowerupCollision( self, event )
     local other = event.other
-    if (playernumber == 3) then
-        display.remove(shield)
-    end
     if (died == false) then
         if (event.other.myName == "pew" or event.other.myName == "player") then
             display.remove(self)
@@ -275,6 +274,9 @@ local function onPowerupCollision( self, event )
             end
             -- Check what type of powerup self is.
             if (self.myName == "firefox") then
+                if (playernumber == 3) then
+                    display.remove(shield)
+                end
                 playernumber = 1
                 fireTime = 100
                 fireMode = 1
@@ -282,6 +284,9 @@ local function onPowerupCollision( self, event )
                 player:play()
                 shootTimer._delay = fireTime
             elseif (self.myName == "chrome") then
+                if (playernumber == 3) then
+                    display.remove(shield)
+                end
                 playernumber = 2
                 fireTime = 350
                 fireMode = 2
@@ -291,6 +296,9 @@ local function onPowerupCollision( self, event )
             elseif (self.myName == "opera") then
                 timer.performWithDelay(5, opera, 1)
             elseif (self.myName == "edge") then
+                if (playernumber == 3) then
+                    display.remove(shield)
+                end
                 playernumber = 4
                 fireTime = 100
                 fireMode = 1
@@ -298,12 +306,25 @@ local function onPowerupCollision( self, event )
                 player:play()
                 shootTimer._delay = fireTime
             elseif (self.myName == "safari") then
+                if (playernumber == 3) then
+                    display.remove(shield)
+                end
                 playernumber = 5
                 fireTime = 50
                 fireMode = 1
                 player:setSequence("safari")
                 player:play()
                 shootTimer._delay = fireTime
+            elseif (self.myName == "lua") then
+                display.remove(self)
+                lives = lives + 1
+            elseif (self.myName == "java") then
+                local function resetTime()
+                    time = composer.getVariable("time")
+                end
+                display.remove(self)
+                time = 500
+                timer.performWithDelay(15000, resetTime, 1)
             end
             -- Removes Powerup from Table so it doesn't break game.
             for i = #powerupTable, 1, -1 do
@@ -375,6 +396,34 @@ local function createObstacles()
             newObstacle.y = randomPosition
             newObstacle:setLinearVelocity( rand2, rand3 )
         end
+    elseif (whoDis > 60 and whoDis <=120) then
+        local powerUpNumber = math.random(2, 3)
+        newPowerup = display.newImageRect( mainGroup, powerUps, powerUpNumber, 200, 200 )
+        table.insert( powerupTable, newPowerup )
+        physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
+        alreadySpawned = 10
+        newPowerup.collision = onPowerupCollision
+        newPowerup:addEventListener( "collision" )
+        if (powerUpNumber == 2) then
+            newPowerup.myName = "lua"
+        elseif (powerUpNumber == 3) then
+            newPowerup.myName = "java"
+        end
+        print("Powerup: " .. newPowerup.myName)
+        if (whereFrom == 1) then
+            newPowerup.x = -60
+            newPowerup.y = math.random ( 800 )
+            newPowerup:setLinearVelocity( math.random( 100, 300 ), math.random( 2, 200) )
+        elseif (whereFrom == 2 or whereFrom == 4) then
+            newPowerup.x = math.random (display.contentCenterX - 520, display.contentCenterX + 520)
+            newPowerup.y = -60
+            newPowerup:setLinearVelocity( 0, math.random( 50, 300) )
+        elseif (whereFrom == 3) then
+            newPowerup.x = display.contentWidth + 60
+            newPowerup.y = math.random( 800 )
+            newPowerup:setLinearVelocity( math.random( -150, -100 ), math.random( 50, 150 ) )
+        end
+        newPowerup:applyTorque( math.random( -100,100 ) )
     else
         newPowerup = display.newImageRect( mainGroup, objectSheet, powerUpNumber, 200, 200 )
         table.insert( powerupTable, newPowerup )
@@ -518,6 +567,11 @@ local function gameLoop()
             createObstacles()
             randomPosition = math.random( 1200 )
         elseif (level >= 10) then
+            backdrop = display.newImageRect( backGroup, "assets/images/menu.jpg", 3256, 2620 )
+            backdrop.x = display.contentCenterX
+            backdrop.y = display.contentCenterY 
+            backdrop.alpha = 0
+            transition.fadeIn( backdrop, { time=3000 } )
             createObstacles()
             createObstacles()
             
@@ -572,11 +626,12 @@ function scene:create( event )
     physics.pause()
 
     -- Set up display groups
-    backGroup = display.newGroup()  -- Display group for the dynamic background image(s)
-    sceneGroup:insert( backGroup )  -- Insert into the scene's view group
 
     veryBackGroup = display.newGroup()  -- Display group for the initial background image
     sceneGroup:insert( veryBackGroup )  -- Insert into the scene's view group
+
+    backGroup = display.newGroup()  -- Display group for the dynamic background image(s)
+    sceneGroup:insert( backGroup )  -- Insert into the scene's view group
  
     mainGroup = display.newGroup()  -- Display group for the ship, asteroids, lasers, etc.
     sceneGroup:insert( mainGroup )  -- Insert into the scene's view group
