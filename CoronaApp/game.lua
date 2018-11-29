@@ -654,8 +654,12 @@ function scene:show( event )
         -- Event Listeners
 
         -- Listens for touch on player
-        player:addEventListener( "touch", startFire )
-        player:addEventListener( "touch", movePlayer )
+        local function addPlayerEventListeners()
+            player:addEventListener( "touch", startFire )
+            player:addEventListener( "touch", movePlayer )
+        end
+
+        timer.performWithDelay(5, addPlayerEventListeners, 1)
         -- Listen for collisions
         -- Runtime:addEventListener( "collision", onCollision )
 	end
