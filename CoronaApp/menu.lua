@@ -30,6 +30,8 @@ function scene:create( event )
 	local background = display.newImageRect( sceneGroup, "assets/images/menu.jpg", 4510, 3627 )
     background.x = display.contentCenterX
 	background.y = display.contentCenterY
+
+	composer.setVariable("background", background)
 	
 	local title = display.newImageRect( sceneGroup, "assets/images/title.png", 1000, 160 )
     title.x = display.contentCenterX

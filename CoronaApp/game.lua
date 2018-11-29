@@ -157,6 +157,7 @@ local characters =
 
 local objectSheet = graphics.newImageSheet( "assets/images/gameObjects.png", objectSheetOptions )
 local powerUps = graphics.newImageSheet( "assets/images/powerUps.png", powerUpOptions )
+local backdrop = composer.getVariable("background")
 
 -- Fix player after they dead
 local function restorePlayer()
@@ -174,10 +175,10 @@ end
 
 local function shieldCollision( self, event )
     local other = event.other
-    print("Shield Health: " .. shieldHealth)
     if (other.myName == "ie11") then
         if (shieldHealth > 0) then
             shieldHealth = shieldHealth - 5
+            print("Shield Health: " .. shieldHealth)
         elseif (shieldHealth <= 0) then
             display.remove(self)
         end
@@ -262,6 +263,10 @@ local function onEnemyCollision( self, event )
     end
 end
 
+local function resetTime()
+    time = composer.getVariable("time")
+end
+
 local function onPowerupCollision( self, event )
     local other = event.other
     if (died == false) then
@@ -318,13 +323,7 @@ local function onPowerupCollision( self, event )
             elseif (self.myName == "lua") then
                 display.remove(self)
                 lives = lives + 1
-            elseif (self.myName == "java") then
-                local function resetTime()
-                    time = composer.getVariable("time")
-                end
-                display.remove(self)
-                time = 500
-                timer.performWithDelay(15000, resetTime, 1)
+                livesText.text = "Lives: " .. lives
             end
             -- Removes Powerup from Table so it doesn't break game.
             for i = #powerupTable, 1, -1 do
@@ -376,7 +375,7 @@ local function createObstacles()
     end
     local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
     local powerUpNumber = math.random( 2, 6 )
-    if (whoDis >= 60 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
+    if (whoDis > 60 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
         physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5} )
@@ -396,51 +395,37 @@ local function createObstacles()
             newObstacle.y = randomPosition
             newObstacle:setLinearVelocity( rand2, rand3 )
         end
-    elseif (whoDis > 60 and whoDis <=120) then
-        local powerUpNumber = math.random(2, 3)
-        newPowerup = display.newImageRect( mainGroup, powerUps, powerUpNumber, 200, 200 )
-        table.insert( powerupTable, newPowerup )
-        physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
-        alreadySpawned = 10
-        newPowerup.collision = onPowerupCollision
-        newPowerup:addEventListener( "collision" )
-        if (powerUpNumber == 2) then
-            newPowerup.myName = "lua"
-        elseif (powerUpNumber == 3) then
-            newPowerup.myName = "java"
-        end
-        print("Powerup: " .. newPowerup.myName)
-        if (whereFrom == 1) then
-            newPowerup.x = -60
-            newPowerup.y = math.random ( 800 )
-            newPowerup:setLinearVelocity( math.random( 100, 300 ), math.random( 2, 200) )
-        elseif (whereFrom == 2 or whereFrom == 4) then
-            newPowerup.x = math.random (display.contentCenterX - 520, display.contentCenterX + 520)
-            newPowerup.y = -60
-            newPowerup:setLinearVelocity( 0, math.random( 50, 300) )
-        elseif (whereFrom == 3) then
-            newPowerup.x = display.contentWidth + 60
-            newPowerup.y = math.random( 800 )
-            newPowerup:setLinearVelocity( math.random( -150, -100 ), math.random( 50, 150 ) )
-        end
-        newPowerup:applyTorque( math.random( -100,100 ) )
     else
-        newPowerup = display.newImageRect( mainGroup, objectSheet, powerUpNumber, 200, 200 )
-        table.insert( powerupTable, newPowerup )
-        physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
-        alreadySpawned = 10
-        newPowerup.collision = onPowerupCollision
-        newPowerup:addEventListener( "collision" )
-        if (powerUpNumber == 2) then
-            newPowerup.myName = "firefox"
-        elseif (powerUpNumber == 3) then
-            newPowerup.myName = "chrome"
-        elseif (powerUpNumber == 4) then
-            newPowerup.myName = "opera"
-        elseif (powerUpNumber == 5) then
-            newPowerup.myName = "edge"
-        elseif (powerUpNumber == 6) then
-            newPowerup.myName = "safari"
+        local type = math.random(1, 2)
+        if (type == 1) then
+            newPowerup = display.newImageRect( mainGroup, objectSheet, powerUpNumber, 200, 200 )
+            table.insert( powerupTable, newPowerup )
+            physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
+            alreadySpawned = 10
+            newPowerup.collision = onPowerupCollision
+            newPowerup:addEventListener( "collision" )
+            if (powerUpNumber == 2) then
+                newPowerup.myName = "firefox"
+            elseif (powerUpNumber == 3) then
+                newPowerup.myName = "chrome"
+            elseif (powerUpNumber == 4) then
+                newPowerup.myName = "opera"
+            elseif (powerUpNumber == 5) then
+                newPowerup.myName = "edge"
+            elseif (powerUpNumber == 6) then
+                newPowerup.myName = "safari"
+            end
+        elseif (type == 2) then
+            local number = math.random(2, 2)
+            newPowerup = display.newImageRect( mainGroup, powerUps, number, 200, 200 )
+            table.insert( powerupTable, newPowerup )
+            physics.addBody( newPowerup, "dynamic", {radius=100, bounce=0.5} )
+            alreadySpawned = 10
+            newPowerup.collision = onPowerupCollision
+            newPowerup:addEventListener( "collision" )
+            if (number == 2) then
+                newPowerup.myName = "lua"
+            end
         end
         print("Powerup: " .. newPowerup.myName)
         if (whereFrom == 1) then
@@ -567,14 +552,8 @@ local function gameLoop()
             createObstacles()
             randomPosition = math.random( 1200 )
         elseif (level >= 10) then
-            backdrop = display.newImageRect( backGroup, "assets/images/menu.jpg", 3256, 2620 )
-            backdrop.x = display.contentCenterX
-            backdrop.y = display.contentCenterY 
-            backdrop.alpha = 0
-            transition.fadeIn( backdrop, { time=3000 } )
             createObstacles()
             createObstacles()
-            
         elseif (level >= 20) then
             createObstacles()
             createObstacles()
@@ -592,7 +571,7 @@ local function gameLoop()
             missed = missed + 1
             display.remove( thisBoi )
             table.remove( obstacleTable, i )
-            print("Enemies Missed: " .. missed)
+            -- print("Enemies Missed: " .. missed)
         end
     end
     -- Remove powerups which have drifted off into oblivion.
@@ -640,9 +619,10 @@ function scene:create( event )
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
     -- Load the background
-    local background = display.newImageRect( veryBackGroup, "assets/images/xp.jpg", 4510, 3627 )
+    local background = display.newImageRect( veryBackGroup, "assets/images/xp.jpg", 2487, 2000 )
     background.x = display.contentCenterX
     background.y = display.contentCenterY  
+    composer.setVariable("background", background)
 
     -- Load the Player
     player = display.newSprite( mainGroup, objectSheet, characters )
