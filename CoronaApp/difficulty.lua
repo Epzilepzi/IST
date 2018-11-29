@@ -5,6 +5,10 @@ local scene = composer.newScene()
 
 local difficulty = 2
 
+local function gotoMenu()
+    composer.gotoScene( "menu", { time=800, effect="crossFade" } )
+end
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -123,6 +127,9 @@ function scene:create( event )
     local hardButton = display.newText( sceneGroup, "Hard", display.contentCenterX, display.contentCenterY + 150, native.systemFont, 100 )
     hardButton:setFillColor( 1 )
     hardButton:addEventListener( "tap", hard )
+
+    local backToMenu = display.newText( sceneGroup, "Back to Menu", display.contentCenterX, display.contentHeight - 100, native.systemFont, 72 )
+	backToMenu:addEventListener( "tap", gotoMenu )
 	
 end
 

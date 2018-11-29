@@ -157,7 +157,33 @@ local characters =
 
 local objectSheet = graphics.newImageSheet( "assets/images/gameObjects.png", objectSheetOptions )
 local powerUps = graphics.newImageSheet( "assets/images/powerUps.png", powerUpOptions )
-local backdrop = composer.getVariable("background")
+local background = "empty"
+
+local function setBackground()
+    local ran10 = false
+    local ran20 = false
+    local ran30 = false
+    local ran40 = false
+    local ran50 = false
+    if (background == "empty") then
+        -- Load the background
+        background = display.newImageRect( veryBackGroup, "assets/images/xp.jpg", 2487, 2000 )
+        background.x = display.contentCenterX
+        background.y = display.contentCenterY 
+    elseif (level == 10 and ran10 == false) then
+        local backdrop = display.newImageRect( backGroup, "assets/images/vista.jpg", 2487, 2000 )
+        backdrop.x = display.contentCenterX
+        backdrop.y = display.contentCenterY 
+        backdrop.alpha = 0
+        transition.fadeIn( backdrop, { time=3000,
+            onComplete = function()
+                display.remove(background)
+                background = backdrop
+            end
+        } )
+    end
+    return background
+end
 
 -- Fix player after they dead
 local function restorePlayer()
@@ -201,6 +227,7 @@ local function opera()
     shield:addEventListener( "collision" )
     shieldHealth = 100
     physics.addBody(shield, "static")
+    return shield
 end
 
 local function highScores()
@@ -395,6 +422,7 @@ local function createObstacles()
             newObstacle.y = randomPosition
             newObstacle:setLinearVelocity( rand2, rand3 )
         end
+        return newObstacle
     else
         local type = math.random(1, 2)
         if (type == 1) then
@@ -442,6 +470,7 @@ local function createObstacles()
             newPowerup:setLinearVelocity( math.random( -150, -100 ), math.random( 50, 150 ) )
         end
         newPowerup:applyTorque( math.random( -100,100 ) )
+        return newPowerup
     end
 end
 
@@ -468,6 +497,7 @@ local function shootThings()
             transition.to( pew, { y=-40, time=500, 
                 onComplete = function() display.remove( pew ) end 
             } )
+            return pew
         elseif (fireMode == 2) then
             local pew1 = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
             local pew2 = display.newImageRect( mainGroup, objectSheet, 7, 28, 80 )
@@ -554,6 +584,7 @@ local function gameLoop()
         elseif (level >= 10) then
             createObstacles()
             createObstacles()
+            setBackground()
         elseif (level >= 20) then
             createObstacles()
             createObstacles()
@@ -618,11 +649,7 @@ function scene:create( event )
     uiGroup = display.newGroup()    -- Display group for UI objects like the score
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
-    -- Load the background
-    local background = display.newImageRect( veryBackGroup, "assets/images/xp.jpg", 2487, 2000 )
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY  
-    composer.setVariable("background", background)
+    setBackground() 
 
     -- Load the Player
     player = display.newSprite( mainGroup, objectSheet, characters )
