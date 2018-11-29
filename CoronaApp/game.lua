@@ -55,7 +55,10 @@ local fireMode = composer.getVariable("fireMode")
 local alreadySpawned = 0
 local playernumber = composer.getVariable("playernumber")
 local shieldHealth = composer.getVariable("shieldHealth")
-local java = false
+
+-- Boss Settings
+local bingHealth = composer.getVariable("bingHealth")
+local bingSpawned = 0
 
 -- "Fun"
 local missed = 0
@@ -145,18 +148,21 @@ local powerUpOptions =
     }
 }
 
-local bingFrames = {
-    {   -- Bing Stage 1
-        x = 0,
-        y = 0,
-        width = 300,
-        height = 300
-    },
-    {   -- Bing Stage 2
-        x = 0,
-        y = 300,
-        width = 300,
-        height = 300
+local bingFrames = 
+{
+    frames = {
+        {   -- Bing Stage 1
+            x = 0,
+            y = 0,
+            width = 300,
+            height = 300
+        },
+        {   -- Bing Stage 2
+            x = 0,
+            y = 300,
+            width = 300,
+            height = 300
+        }
     }
 }
 
@@ -190,11 +196,12 @@ local function setBackground()
     local ran50 = false
     if (background == "empty") then
         -- Load the background
-        background = display.newImageRect( backGroup, "assets/images/xp.jpg", 2487, 2000 )
+        background = display.newImageRect( backGroup, "assets/images/xp.jpg", 3730, 3000 )
         background.x = display.contentCenterX
         background.y = display.contentCenterY 
     elseif (level == 10 and ran10 == false) then
-        backdrop = display.newImageRect( backGroup, "assets/images/vista.jpg", 2487, 2000 )
+        ran10 = true
+        backdrop = display.newImageRect( backGroup, "assets/images/vista.jpg", 3730, 3000 )
         backdrop.x = display.contentCenterX
         backdrop.y = display.contentCenterY 
         backdrop.alpha = 0
@@ -203,8 +210,31 @@ local function setBackground()
                 display.remove(background)
             end
         } )
-    elseif (level == 25 and ran20 == false) then
-        background = display.newImageRect( backGroup, "assets/images/7.jpg", 2487, 2000 )
+    elseif (level == 20 and ran20 == false) then
+        ran20 = true
+        background = display.newImageRect( backGroup, "assets/images/7.jpg", 3730, 3000 )
+        background.x = display.contentCenterX
+        background.y = display.contentCenterY 
+        background.alpha = 0
+        transition.fadeIn( background, {
+            onComplete = function()
+                display.remove(backdrop)
+            end
+        } )
+    elseif (level == 35 and ran30 == false) then
+        ran30 = true
+        backdrop = display.newImageRect( backGroup, "assets/images/8.jpg", 3730, 3000 )
+        backdrop.x = display.contentCenterX
+        backdrop.y = display.contentCenterY 
+        backdrop.alpha = 0
+        transition.fadeIn( backdrop, { time=3000,
+            onComplete = function()
+                display.remove(background)
+            end
+        } )
+    elseif (level == 50 and ran40 == false) then
+        ran40 = true
+        background = display.newImageRect( backGroup, "assets/images/10.jpg", 3730, 3000 )
         background.x = display.contentCenterX
         background.y = display.contentCenterY 
         background.alpha = 0
@@ -226,7 +256,15 @@ local function restorePlayer()
     transition.to( player, { alpha=1, time=4000,
         onComplete = function()
             if (playernumber == 3) then
-                opera()
+                shield = display.newImageRect(mainGroup, powerUps, 1, 300, 100)
+                shield.x = player.x
+                shield.y = player.y - 150
+                shield.myName = "shield"
+                shield.collision = shieldCollision
+                shield:addEventListener( "collision" )
+                shieldHealth = 100
+                physics.addBody(shield, "static")
+                return shield
             end
             player.isBodyActive = true
             died = false
@@ -278,7 +316,7 @@ end
 -- When something collides with an enemy
 local function onEnemyCollision( self, event )
     local other = event.other
-    if (event.other.myName == "pew") then 
+    if (event.other.myName == "pew" and self.myName ~= "bing" and self.myName ~= "java") then 
         display.remove(self)
         display.remove(other)
         for i = #obstacleTable, 1, -1 do
@@ -290,43 +328,172 @@ local function onEnemyCollision( self, event )
         -- Add Score
         score = score + 100
         scoreText.text = "Score: " .. score
-        if (score >= level * 1000) then
-            -- Level Up
-            level = level + 1
-            levelText.text = "Level: " .. level
-            print("Level: " .. level)
-            -- Make Game Run Faster
-            if (time - 5 >= minTime) then
-                time = time - 5
-                composer.setVariable("time",time)
-                gameLoopTimer._delay = time
-            else 
-                time = minTime
-                composer.setVariable("time",time)
-                gameLoopTimer._delay = time
+    -- Edge is immune to IE, so it won't die when hit.
+    elseif (event.other.myName == "player" and self.myName == "ie11") then
+        if (playernumber ~= 4) then
+            if (died == false) then
+                died = true
+                -- Update lives
+                lives = lives - 1
+                livesText.text = "Lives: " .. lives
+                if (lives == 0) then
+                    display.remove(other)
+                    -- timer.performWithDelay( 2000, endGame )
+                    gameOver = true
+                    endGame()
+                else
+                    player.alpha = 0
+                    timer.performWithDelay(1000, restorePlayer)
+                end
             end
         end
-    elseif (event.other.myName == "player" and playernumber ~= 4) then
-        if (died == false) then
-            died = true
-            -- Update lives
-            lives = lives - 1
-            livesText.text = "Lives: " .. lives
-            if (lives == 0) then
+    elseif (self.myName == "bing") then
+        if (event.other.myName == "pew" and self.myName == "bing") then 
+            if (bingHealth > 1) then
                 display.remove(other)
-                -- timer.performWithDelay( 2000, endGame )
-                gameOver = true
-                endGame()
-            else
-                player.alpha = 0
-                timer.performWithDelay(1000, restorePlayer)
+                bingHealth = bingHealth - 1
+                if (bingHealth == 1) then
+                    bing:setSequence("unhealthy")
+                    bing:play()
+                end
+            elseif (bingHealth == 1) then 
+                bingHealth = 0
+                display.remove(self)
+                display.remove(other)
+                for i = #obstacleTable, 1, -1 do
+                    if ( obstacleTable[i] == self ) then
+                        table.remove( obstacleTable, i )
+                        break
+                    end
+                end
+                score = score + 300
+                scoreText.text = "Score: " .. score
             end
+        elseif (event.other.myName == "player") then
+            if (died == false) then
+                died = true
+                -- Subtract Score
+                score = score - 100
+                scoreText.text = "Score: " .. score
+                -- Update lives
+                lives = lives - 1
+                livesText.text = "Lives: " .. lives
+                if (lives == 0) then
+                    display.remove(other)
+                    -- timer.performWithDelay( 2000, endGame )
+                    gameOver = true
+                    endGame()
+                else
+                    player.alpha = 0
+                    timer.performWithDelay(1000, restorePlayer)
+                end
+                -- Bing gains more health from your pain.
+                bingHealth = bingHealth + 1
+                if (bingHealth > 1) then
+                    bing:setSequence("healthy")
+                    bing:play()
+                end
+            end
+        end
+    elseif (self.myName == "java") then
+        if (event.other.myName == "pew" and self.myName == "java") then 
+            display.remove(other)
+            display.remove(self)
+            for i = #obstacleTable, 1, -1 do
+                if ( obstacleTable[i] == self ) then
+                    table.remove( obstacleTable, i )
+                    break
+                end
+            end
+            score = score + 200
+            scoreText.text = "Score: " .. score
+            timer.cancel(javaTimer)
+            javaTimer = nil
+            java = nil
+        elseif (event.other.myName == "player") then
+            if (died == false) then
+                died = true
+                -- Subtract Score
+                score = score - 100
+                scoreText.text = "Score: " .. score
+                -- Update lives
+                lives = lives - 1
+                livesText.text = "Lives: " .. lives
+                if (lives == 0) then
+                    display.remove(other)
+                    -- timer.performWithDelay( 2000, endGame )
+                    gameOver = true
+                    endGame()
+                else
+                    player.alpha = 0
+                    timer.performWithDelay(1000, restorePlayer)
+                end
+            end
+        end
+    elseif (self.myName == "js") then
+        if (event.other.myName == "pew") then 
+            display.remove(other)
+            display.remove(self)
+            score = score + 50
+            scoreText.text = "Score: " .. score
+        elseif (event.other.myName == "player") then
+            display.remove(self)
+            if (died == false) then
+                died = true
+                -- Subtract Score
+                score = score - 100
+                scoreText.text = "Score: " .. score
+                -- Update lives
+                lives = lives - 1
+                livesText.text = "Lives: " .. lives
+                if (lives == 0) then
+                    display.remove(other)
+                    -- timer.performWithDelay( 2000, endGame )
+                    gameOver = true
+                    endGame()
+                else
+                    player.alpha = 0
+                    timer.performWithDelay(1000, restorePlayer)
+                end
+            end
+        end
+    end
+    -- Checks if score has reached level up threshold
+    if (score >= level * 1000) then
+        -- Level Up
+        level = level + 1
+        levelText.text = "Level: " .. level
+        print("Level: " .. level)
+        -- Make Game Run Faster
+        if (time - 5 >= minTime) then
+            time = time - 5
+            composer.setVariable("time",time)
+            gameLoopTimer._delay = time
+        else 
+            time = minTime
+            composer.setVariable("time",time)
+            gameLoopTimer._delay = time
         end
     end
 end
 
 local function resetTime()
     time = composer.getVariable("time")
+end
+
+local function javaShoot()
+    local js = display.newImageRect( mainGroup, objectSheet, 8, 28, 80 )
+    physics.addBody( js, "dynamic", {isSensor=true} )
+    js.isBullet = true
+    js.myName = "js"
+    js.x = java.x
+    js.y = java.y
+    js.collision = onEnemyCollision
+    js:addEventListener("collision")
+    js:toBack()
+    transition.to( js, { y = 2000, time=800, 
+        onComplete = function() display.remove( js ) end 
+    } )
 end
 
 local function onPowerupCollision( self, event )
@@ -408,18 +575,7 @@ local function createObstacles()
     local rand1
     local rand2
     local rand3
-    if (java == true) then
-        if (difficulty == 1) then
-            randomPosition = math.random( 500 )
-        elseif (difficulty == 2) then
-            randomPosition = math.random( 700 )
-        elseif (difficulty == 3) then
-            randomPosition = math.random( 900 )
-        end
-        rand1 = 100
-        rand2 = -100
-        rand3 = 25
-    elseif (difficulty == 1) then
+    if (difficulty == 1) then
         randomPosition = math.random( 500 )
         rand1 = math.random( level * 10, level * 50 )
         rand2 = math.random( level * -50, level * -10 )
@@ -437,7 +593,7 @@ local function createObstacles()
     end
     local rand4 = math.random(display.contentCenterX - 520, display.contentCenterX + 520)
     local powerUpNumber = math.random( 2, 6 )
-    if (whoDis > 60 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
+    if (whoDis > 150 or level < 10 or alreadySpawned > 0 or powerUpNumber == playernumber + 1) then
         newObstacle = display.newImageRect( mainGroup, objectSheet, 1, 200, 200 )
         table.insert( obstacleTable, newObstacle )
         physics.addBody( newObstacle, "dynamic", {radius=100, bounce=0.5} )
@@ -458,6 +614,58 @@ local function createObstacles()
             newObstacle:setLinearVelocity( rand2, rand3 )
         end
         return newObstacle
+    elseif (whoDis > 90 and level > 10 and bingSpawned == 0) then
+        bingSpawned = 3
+        bingHealth = composer.getVariable("bingHealth")
+        bing = display.newSprite( mainGroup, bings, bingStates )
+        table.insert( obstacleTable, bing )
+        physics.addBody( bing, "dynamic", {radius=100, bounce=0.5} )
+        bing.myName = "bing"
+        bing:setSequence("healthy")
+        bing:scale((200/300), (200/300))
+        bing:play()
+        bing.collision = onEnemyCollision
+        bing:addEventListener( "collision" )
+        if (whereFrom == 1) then
+            bing.x = -60
+            bing.y = randomPosition
+            bing:setLinearVelocity( rand1 * (2/3), rand3 * (2/3) )
+        elseif (whereFrom == 2 or whereFrom == 4) then
+            bing.x = rand4
+            bing.y = -60
+            bing:setLinearVelocity( 0, rand1 * (2/3) )
+        elseif (whereFrom == 3) then
+            bing.x = display.contentWidth + 60
+            bing.y = randomPosition
+            bing:setLinearVelocity( rand2 * (2/3), rand3  * (2/3))
+        end
+        print("Lord Bing is Here!")
+        print("Bing Health: " .. bingHealth)
+        return bing
+    elseif (whoDis > 60 and level > 10 and alreadySpawned == 0 and java == nil) then
+        alreadySpawned = 5
+        java = display.newImageRect( mainGroup, powerUps, 3, 200, 200)
+        table.insert( obstacleTable, java )
+        physics.addBody( java, "dynamic", {radius=100, bounce=0.5} )
+        java.myName = "java"
+        java.collision = onEnemyCollision
+        java:addEventListener( "collision" )
+        javaTimer = timer.performWithDelay(800, javaShoot, 5)
+        if (whereFrom == 1) then
+            java.x = -60
+            java.y = randomPosition
+            java:setLinearVelocity( rand1 * (1/2), rand3 * (1/2) )
+        elseif (whereFrom == 2 or whereFrom == 4) then
+            java.x = rand4
+            java.y = -60
+            java:setLinearVelocity( 0, rand1 * (1/2) )
+        elseif (whereFrom == 3) then
+            java.x = display.contentWidth + 60
+            java.y = randomPosition
+            java:setLinearVelocity( rand2 * (1/2), rand3  * (1/2))
+        end
+        print("Java is Here!")
+        return java
     else
         local type = math.random(1, 2)
         if (type == 1) then
@@ -513,6 +721,9 @@ end
 local function alreadySpawnedCount()
     if (alreadySpawned > 0) then
         alreadySpawned = alreadySpawned - 1
+    end
+    if (bingSpawned > 0) then
+        bingSpawned = bingSpawned - 1
     end
 end
 
@@ -618,12 +829,15 @@ local function gameLoop()
             randomPosition = math.random( 1200 )
         elseif (level >= 10) then
             createObstacles()
-            createObstacles()
             setBackground()
         elseif (level >= 20) then
             createObstacles()
             createObstacles()
+        elseif (level >= 30) then
             createObstacles()
+            createObstacles()
+            createObstacles()
+            setBackground()
         end
     end
     -- Remove enemies which have drifted off screen
@@ -637,7 +851,7 @@ local function gameLoop()
             missed = missed + 1
             display.remove( thisBoi )
             table.remove( obstacleTable, i )
-            -- print("Enemies Missed: " .. missed)
+            print("Enemies Missed: " .. missed)
         end
     end
     -- Remove powerups which have drifted off into oblivion.
@@ -685,6 +899,8 @@ function scene:create( event )
     sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
 
     setBackground() 
+
+    print(display.contentHeight)
 
     -- Load the Player
     player = display.newSprite( mainGroup, objectSheet, characters )
@@ -739,6 +955,7 @@ function scene:hide( event )
         timer.cancel( gameLoopTimer )
         timer.cancel( shootTimer )
         timer.cancel( spawnTimer )
+        javaTimer = nil
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
         physics.pause()

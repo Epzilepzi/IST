@@ -25,6 +25,7 @@ local function gotoGame()
 	composer.setVariable("fireMode", fireMode)
 	composer.setVariable("playernumber", playernumber)
     composer.setVariable("shieldHealth", shieldHealth)
+    composer.setVariable("bingHealth", bingHealth)
     print("Difficulty: " .. composer.getVariable("difficulty"))
 	composer.gotoScene("game", { time=500, effect="crossFade" })
 end
@@ -47,6 +48,9 @@ local function setUpGame()
         -- PowerUp Settings
         playernumber = 1
         shieldHealth = 200
+
+        -- Boss Settings
+        bingHealth = 2
     elseif (difficulty == 2) then
         -- Load Difficulty Settings
         minTime = 100
@@ -63,6 +67,9 @@ local function setUpGame()
         -- PowerUp Settings
         playernumber = 1
         shieldHealth = 100
+
+        -- Boss Settings
+        bingHealth = 2
     elseif (difficulty == 3) then
         -- Load Difficulty Settings
         minTime = 150
@@ -79,6 +86,9 @@ local function setUpGame()
         -- PowerUp Settings
         playernumber = 1
         shieldHealth = 50
+
+        -- Boss Settings
+        bingHealth = 3
 	end
 	gotoGame()
 end
