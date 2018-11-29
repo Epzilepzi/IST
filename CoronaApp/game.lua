@@ -225,6 +225,9 @@ local function restorePlayer()
     -- Fade in the player
     transition.to( player, { alpha=1, time=4000,
         onComplete = function()
+            if (playernumber == 3) then
+                opera()
+            end
             player.isBodyActive = true
             died = false
         end
