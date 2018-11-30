@@ -14,3 +14,5 @@ You are a "superior browser" (Firefox) who has to defend themselves from the onc
 - Random enemy generation.
 - Changing Backgrounds. Because of course.
 - Sick menu transitions.
+
+All images used belong to their respective owners, and are used for educational purposes only.
