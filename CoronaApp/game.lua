@@ -675,7 +675,6 @@ local function createObstacles()
             elseif (powerUpNumber == 6) then
                 newPowerup.myName = "safari"
             end
-            return newPowerup
         elseif (type == 2) then
             local number = math.random(2, 2)
             newPowerup = display.newImageRect( mainGroup, powerUps, number, 200, 200 )
@@ -687,7 +686,6 @@ local function createObstacles()
             if (number == 2) then
                 newPowerup.myName = "lua"
             end
-            return newPowerup
         end
         print("Powerup: " .. newPowerup.myName)
         if (whereFrom == 1) then
@@ -824,11 +822,7 @@ local function gameLoop()
         elseif (level >= 20) then
             createObstacles()
             createObstacles()
-        elseif (level >= 30) then
             createObstacles()
-            createObstacles()
-            createObstacles()
-            setBackground()
         end
     end
     -- Remove enemies which have drifted off screen
