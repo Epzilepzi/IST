@@ -255,17 +255,6 @@ local function restorePlayer()
     -- Fade in the player
     transition.to( player, { alpha=1, time=4000,
         onComplete = function()
-            if (playernumber == 3) then
-                shield = display.newImageRect(mainGroup, powerUps, 1, 300, 100)
-                shield.x = player.x
-                shield.y = player.y - 150
-                shield.myName = "shield"
-                shield.collision = shieldCollision
-                shield:addEventListener( "collision" )
-                shieldHealth = 100
-                physics.addBody(shield, "static")
-                return shield
-            end
             player.isBodyActive = true
             died = false
         end
@@ -619,7 +608,7 @@ local function createObstacles()
         bingHealth = composer.getVariable("bingHealth")
         bing = display.newSprite( mainGroup, bings, bingStates )
         table.insert( obstacleTable, bing )
-        physics.addBody( bing, "dynamic", {radius=100, bounce=0.5} )
+        physics.addBody( bing, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
         bing.myName = "bing"
         bing:setSequence("healthy")
         bing:scale((200/300), (200/300))
@@ -646,7 +635,7 @@ local function createObstacles()
         alreadySpawned = 5
         java = display.newImageRect( mainGroup, powerUps, 3, 200, 200)
         table.insert( obstacleTable, java )
-        physics.addBody( java, "dynamic", {radius=100, bounce=0.5} )
+        physics.addBody( java, "dynamic", {radius=100, bounce=0.5, isSensor=true} )
         java.myName = "java"
         java.collision = onEnemyCollision
         java:addEventListener( "collision" )
@@ -686,6 +675,7 @@ local function createObstacles()
             elseif (powerUpNumber == 6) then
                 newPowerup.myName = "safari"
             end
+            return newPowerup
         elseif (type == 2) then
             local number = math.random(2, 2)
             newPowerup = display.newImageRect( mainGroup, powerUps, number, 200, 200 )
@@ -697,6 +687,7 @@ local function createObstacles()
             if (number == 2) then
                 newPowerup.myName = "lua"
             end
+            return newPowerup
         end
         print("Powerup: " .. newPowerup.myName)
         if (whereFrom == 1) then
@@ -955,7 +946,6 @@ function scene:hide( event )
         timer.cancel( gameLoopTimer )
         timer.cancel( shootTimer )
         timer.cancel( spawnTimer )
-        javaTimer = nil
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
         physics.pause()
@@ -982,3 +972,5 @@ scene:addEventListener( "destroy", scene )
 -- -----------------------------------------------------------------------------------
 
 return scene
+
+-- -----------------------------------------------------------------------------------
