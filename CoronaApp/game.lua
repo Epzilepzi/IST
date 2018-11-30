@@ -818,6 +818,7 @@ local function gameLoop()
             randomPosition = math.random( 1200 )
         elseif (level >= 10) then
             createObstacles()
+            createObstacles()
             setBackground()
         elseif (level >= 20) then
             createObstacles()
