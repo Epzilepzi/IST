@@ -68,7 +68,7 @@ A mesh network is a local network topology where each individual node is connect
 
 #### **Hybrid**
 
-A Hybrid Network is where a combination of topologies are used in order to create a purpose built network. Examples may include using an ethernet topology inside buildings, and having the buildings connected by a mesh network.
+A Hybrid Network is where a combination of topologies are used in order to create a purpose built network. Examples may include using an Ethernet topology inside buildings, and having the buildings connected by a mesh network.
 
 ### **Network Types**
 
@@ -116,40 +116,21 @@ File Transfer Protocol (FTP) is a protocol used to transfer files onto a remote 
 
 ---
 
-https://www.techopedia.com/definition/2277/router  
-https://www.diffen.com/difference/Router_vs_Switch  
-https://whatismyipaddress.com/gateway  
-https://computer.howstuffworks.com/what-is-network-server.htm  
-https://www.webopedia.com/TERM/R/repeater.html  
-https://www.lifewire.com/what-is-a-file-2625878  
-https://www.techopedia.com/definition/441/database-server  
-https://whatismyipaddress.com/proxy-server  
-https://www.black-box.de/en-de/page/21072/Resources/Technical-Resources/Technology-Overview/Ethernet-Topologies  
-http://www.telecomabc.com/s/star.html  
-https://www.webopedia.com/TERM/H/HTTP.html  
-https://www.instantssl.com/ssl-certificate-products/https.html  
-https://www.instantssl.com/ssl.html  
-https://searchnetworking.techtarget.com/definition/TCP-IP  
-https://searchenterprisewan.techtarget.com/definition/WAN  
-https://searchnetworking.techtarget.com/definition/metropolitan-area-network-MAN  
+<https://www.techopedia.com/definition/2277/router>  
+<https://www.diffen.com/difference/Router_vs_Switch>  
+<https://whatismyipaddress.com/gateway>  
+<https://computer.howstuffworks.com/what-is-network-server.htm>  
+<https://www.webopedia.com/TERM/R/repeater.html>  
+<https://www.lifewire.com/what-is-a-file-2625878>  
+<https://www.techopedia.com/definition/441/database-server>  
+<https://whatismyipaddress.com/proxy-server>  
+<https://www.black-box.de/en-de/page/21072/Resources/Technical-Resources/Technology-Overview/Ethernet-Topologies>  
+<http://www.telecomabc.com/s/star.html>  
+<https://www.webopedia.com/TERM/H/HTTP.html>  
+<https://www.instantssl.com/ssl-certificate-products/https.html>  
+<https://www.instantssl.com/ssl.html>  
+<https://searchnetworking.techtarget.com/definition/TCP-IP>  
+<https://searchenterprisewan.techtarget.com/definition/WAN>  
+<https://searchnetworking.techtarget.com/definition/metropolitan-area-network-MAN>  
 
 ---
-
-<!-- 
-https://www.techopedia.com/definition/2277/router 
-https://www.diffen.com/difference/Router_vs_Switch
-https://whatismyipaddress.com/gateway
-https://computer.howstuffworks.com/what-is-network-server.htm
-https://www.webopedia.com/TERM/R/repeater.html
-https://www.lifewire.com/what-is-a-file-2625878
-https://www.techopedia.com/definition/441/database-server
-https://whatismyipaddress.com/proxy-server
-https://www.black-box.de/en-de/page/21072/Resources/Technical-Resources/Technology-Overview/Ethernet-Topologies
-http://www.telecomabc.com/s/star.html
-https://www.webopedia.com/TERM/H/HTTP.html
-https://www.instantssl.com/ssl-certificate-products/https.html
-https://www.instantssl.com/ssl.html
-https://searchnetworking.techtarget.com/definition/TCP-IP
-https://searchenterprisewan.techtarget.com/definition/WAN
-https://searchnetworking.techtarget.com/definition/metropolitan-area-network-MAN
--->
