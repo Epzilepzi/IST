@@ -64,3 +64,15 @@
 - Arch linux uses binary and source packages, meaning it is up to the user to compile and build packages. This is helped by Pacman, the package management system, as well as the Arch User Repository (AUR).
 
 ![Arch](https://www.maketecheasier.com/assets/uploads/2018/09/arch-linux-history.jpg)
+
+## File Management
+
+- Linux follows a file system structure called the Linux File Hierarchy Structure or FHS.
+- Under the FHS Standard, all files and directories go under the "root directory" which is `/`. This is the case even if the files are on different drives.
+- Most Unix based systems follow the same directory structure.
+
+![list](https://cdncontribute.geeksforgeeks.org/wp-content/uploads/linuxDir.jpg)
+Diagram of a typical linux file system structure.
+
+- There are many ways of accessing these files. They can be accessed via a terminal emulator, and directories can be navigated using commands such as `cd` and `ls`.
+- Terminal based file managers also exist, such as Midnight Commander and Ranger.
