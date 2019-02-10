@@ -76,3 +76,21 @@ Diagram of a typical linux file system structure.
 
 - There are many ways of accessing these files. They can be accessed via a terminal emulator, and directories can be navigated using commands such as `cd` and `ls`.
 - Terminal based file managers also exist, such as Midnight Commander and Ranger.
+- Many Desktop Environments also provide graphical file managers. Examples include Dolphin (included with KDE Plasma), Thunar (included with xfce) and Caja (included with MATE).
+
+## Security
+
+### Permissions
+
+- The linux kernel includes many security features. Since it is UNIX based, it contains most of UNIX's security features, include extended versions of Discretionary Access Control (DAC).
+- DAC allows for the owner of an object (i.e. file or directory) to set certain security policies, such as read and write permissions.
+- Programs run by users run with the rights of that specific user in all cases. A superuser exists, which has all the rights to everything on the system.
+- Further enhancements to this feature allowed more control over resources that the original UNIX DAC didn't cover (i.e. network packet flows).
+- POSIX ACL (Access Control Lists) further extended the UNIX DAC ACL to allow more control and more seperate permissions. These are managed by the `setfacl` and `getfacl` commands, as well as being stored on disk using extended attributes in the metadata of files.
+- POSIX Capabilities are also present in order to break up the power of the superuser. This ensures that a program only gets the privileges it needs. Program capabilities can be altered with the `setcap` and `getcap` utilities.
+- Namespaces, deriving from the Plan 9 operating system (a successor research project of UNIX) is also present in linux. This allows for processors to launch its own seperate `/tmp` directory, ensuring that only users and programs with the right permissions can access it.
+
+### Network Security
+
+- Netfilter is a framework which allows for kernel-level modules to examine packets, and to determine the appropriate course of action for the packet.
+  - `iptables` is an example of such, implementing IPv4 and IPv6 firewalls, which can be managed via the userland tool.
