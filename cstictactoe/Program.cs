@@ -4,52 +4,6 @@ namespace cstictactoe
 {
     class Program
     {
-        // Check 8 ways of winning
-        static bool CheckWin(){
-            if (grid[0] == grid[1] && grid[1] == grid[2] && grid[0] != '-') {
-                return true;
-            }
-            else if (grid[3] == grid[4] && grid[4] == grid[5] && grid[3] != '-') {
-                return true;
-            }
-            else if (grid[6] == grid[7] && grid[7] == grid[8] && grid[6] != '-') {
-                return true;
-            }
-            else if (grid[0] == grid[3] && grid[3] == grid[6] && grid[0] != '-') {
-                return true;
-            }
-            else if (grid[1] == grid[4] && grid[4] == grid[7] && grid[1] != '-') {
-                return true;
-            }
-            else if (grid[2] == grid[5] && grid[5] == grid[8] && grid[2] != '-') {
-                return true;
-            }
-            else if (grid[0] == grid[4] && grid[4] == grid[8] && grid[0] != '-') {
-                return true;
-            }
-            else if (grid[2] == grid[4] && grid[4] == grid[6] && grid[2] != '-') {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        static string PrintGrid() {
-            string output = "\n\n[" +
-                grid[0] + "][" +
-                grid[1] + "][" +
-                grid[2] + "]\n[" +
-                grid[3] + "][" +
-                grid[4] + "][" +
-                grid[5] + "]\n[" +
-                grid[6] + "][" +
-                grid[7] + "][" +
-                grid[8] + "]" +
-                "\n\n";
-            return output;
-        }
-
         // Create a grid of squares
         static char[] grid = new char[] {'-','-','-','-','-','-','-','-','-'};
 
@@ -194,8 +148,24 @@ namespace cstictactoe
                 }
             }
         }
-        // Random algorithm to determine placement
-        // This is mainly just for testing to see if turn taking works.
+
+        // Set the playing field
+        static string PrintGrid() {
+            string output = "\n\n[" +
+                grid[0] + "][" +
+                grid[1] + "][" +
+                grid[2] + "]\n[" +
+                grid[3] + "][" +
+                grid[4] + "][" +
+                grid[5] + "]\n[" +
+                grid[6] + "][" +
+                grid[7] + "][" +
+                grid[8] + "]" +
+                "\n\n";
+            return output;
+        }
+
+        // CPU Player Instructions
         static string aiMove() {
             // Normie random algorithm
                 Random rnd = new Random();
@@ -210,6 +180,37 @@ namespace cstictactoe
                     return "1";
                 }
             */
+        }
+
+        // Check 8 ways of winning
+        static bool CheckWin(){
+            if (grid[0] == grid[1] && grid[1] == grid[2] && grid[0] != '-') {
+                return true;
+            }
+            else if (grid[3] == grid[4] && grid[4] == grid[5] && grid[3] != '-') {
+                return true;
+            }
+            else if (grid[6] == grid[7] && grid[7] == grid[8] && grid[6] != '-') {
+                return true;
+            }
+            else if (grid[0] == grid[3] && grid[3] == grid[6] && grid[0] != '-') {
+                return true;
+            }
+            else if (grid[1] == grid[4] && grid[4] == grid[7] && grid[1] != '-') {
+                return true;
+            }
+            else if (grid[2] == grid[5] && grid[5] == grid[8] && grid[2] != '-') {
+                return true;
+            }
+            else if (grid[0] == grid[4] && grid[4] == grid[8] && grid[0] != '-') {
+                return true;
+            }
+            else if (grid[2] == grid[4] && grid[4] == grid[6] && grid[2] != '-') {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 }
