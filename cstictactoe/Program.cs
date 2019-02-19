@@ -70,7 +70,7 @@ namespace cstictactoe
         static int square = 0;
 
         // Who is the player?
-        static char player = 'm';
+        static char player; // = 'm';
 
         // Cosmetic
         static bool firstMove = true;
@@ -106,7 +106,7 @@ namespace cstictactoe
                 else if (userInput == "exit"){
                     menu = false;
                     exit = true;
-                    Console.Write("\n");
+                    Console.Clear();
                 }
                 else {
                     Console.Clear();
