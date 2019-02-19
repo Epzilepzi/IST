@@ -91,10 +91,10 @@ namespace cstictactoe
                     numberMoves = 9;
                 }
                 else if (moveSquare == "exit") {
-                    Console.WriteLine("Thank you for playing Tic Tac Toe!\n");
                     gameon = false;
+                    Console.Clear();
                 }
-                // Error check wrong input (not an integer)
+                // Error check if input is square
                 else if (!int.TryParse(moveSquare, out square)) {
                     Console.Clear();
                     Console.Write(PrintGrid());
@@ -165,21 +165,157 @@ namespace cstictactoe
             return output;
         }
 
-        // CPU Player Instructions
-        static string aiMove() {
-            // Normie random algorithm
-                Random rnd = new Random();
-                int rand = rnd.Next(1, 9);
-                return rand.ToString();
+        // Normie random algorithm
+        static int randomMove() {
+            Random rnd = new Random();
+            int rand = rnd.Next(1, 10);
+            return rand;
+        }
 
-            /* Chad unbeatable algorithm
-                if (rand != null) {
-                    return rand.ToString();
+        static string plan = "a";
+
+        // Chad unbeatable algorithm
+        static string aiMove() {
+            Random rnd = new Random();
+            // Strategy when player goes first
+            int move = 5;
+            int choice = rnd.Next(1, 2);
+
+            if (player == 'x') {
+                if (square != 5 && numberMoves == 1) {
+                    plan = "a";
+                    move = 5;
                 }
-                else if (rand == null){
-                    return "1";
+                else if (numberMoves == 1) {
+                    plan = "b";
+                    move = 1;
                 }
-            */
+                // Left for now, used for debugging
+                else {
+                    move = randomMove();
+                }
+            }
+            // Strategy when CPU goes first
+            else if (player == 'o') {
+                if (numberMoves < 1) {
+                    plan = "a";
+                    move = 5;
+                }
+                else if (numberMoves == 2) {
+                    switch (square) {
+                        case 1:
+                            plan = "a";
+                            switch (choice) {
+                                case 1:
+                                    move = 4;
+                                    break;
+                                case 2:
+                                    move = 2;
+                                    break;
+                                default:
+                                    move = 2;
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            plan = "a";
+                            switch (choice) {
+                                case 1:
+                                    move = 2;
+                                    break;
+                                case 2:
+                                    move = 6;
+                                    break;
+                                default:
+                                    move = 6;
+                                    break;
+                            }
+                            break;
+                        case 7:
+                            plan = "a";
+                            switch (choice) {
+                                case 1:
+                                    move = 8;
+                                    break;
+                                case 2:
+                                    move = 4;
+                                    break;
+                                default:
+                                    move = 4;
+                                    break;
+                            }
+                            break;
+                        case 9:
+                            plan = "a";
+                            switch (choice) {
+                                case 1:
+                                    move = 8;
+                                    break;
+                                case 2:
+                                    move = 6;
+                                    break;
+                                default:
+                                    move = 8;
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            switch (choice) {
+                                case 1:
+                                    move = 3;
+                                    break;
+                                case 2:
+                                    move = 1;
+                                    break;
+                            }
+                            plan = "b";
+                            break;
+                        case 4:
+                            switch (choice) {
+                                case 1:
+                                    move = 1;
+                                    break;
+                                case 2:
+                                    move = 7;
+                                    break;
+                            }
+                            plan = "b";
+                            break;
+                        case 6:
+                            switch (choice) {
+                                case 1:
+                                    move = 3;
+                                    break;
+                                case 2:
+                                    move = 9;
+                                    break;
+                            }
+                            plan = "b";
+                            break;
+                        case 8:
+                            switch (choice) {
+                                case 1:
+                                    move = 6;
+                                    break;
+                                case 2:
+                                    move = 9;
+                                    break;
+                            }
+                            plan = "b";
+                            break;
+                        default:
+                            move = 1;
+                            plan = "b";
+                            break;
+                    }
+                }
+                // Left for now, used for debugging
+                else {
+                    move = randomMove();
+                }
+            }
+
+            return move.ToString();
         }
 
         // Check 8 ways of winning
