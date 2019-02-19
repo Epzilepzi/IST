@@ -1,0 +1,11 @@
+/Users/louie.gu/Desktop/IST/cstictactoe/bin/Debug/netcoreapp2.2/cstictactoe.deps.json
+/Users/louie.gu/Desktop/IST/cstictactoe/bin/Debug/netcoreapp2.2/cstictactoe.runtimeconfig.json
+/Users/louie.gu/Desktop/IST/cstictactoe/bin/Debug/netcoreapp2.2/cstictactoe.runtimeconfig.dev.json
+/Users/louie.gu/Desktop/IST/cstictactoe/bin/Debug/netcoreapp2.2/cstictactoe.dll
+/Users/louie.gu/Desktop/IST/cstictactoe/bin/Debug/netcoreapp2.2/cstictactoe.pdb
+/Users/louie.gu/Desktop/IST/cstictactoe/obj/Debug/netcoreapp2.2/cstictactoe.csprojAssemblyReference.cache
+/Users/louie.gu/Desktop/IST/cstictactoe/obj/Debug/netcoreapp2.2/cstictactoe.csproj.CoreCompileInputs.cache
+/Users/louie.gu/Desktop/IST/cstictactoe/obj/Debug/netcoreapp2.2/cstictactoe.AssemblyInfoInputs.cache
+/Users/louie.gu/Desktop/IST/cstictactoe/obj/Debug/netcoreapp2.2/cstictactoe.AssemblyInfo.cs
+/Users/louie.gu/Desktop/IST/cstictactoe/obj/Debug/netcoreapp2.2/cstictactoe.dll
+/Users/louie.gu/Desktop/IST/cstictactoe/obj/Debug/netcoreapp2.2/cstictactoe.pdb
