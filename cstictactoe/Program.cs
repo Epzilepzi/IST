@@ -101,7 +101,7 @@ namespace cstictactoe
                     Console.WriteLine("Improper input. Try again player " + turn + "\n");
                 }
                 //Check for valid move
-                else if (square >= 1 && square <=9 && grid[square - 1] == '-') {
+                else if (square >= 1 && square <= 9 && grid[square - 1] == '-') {
                     grid[square - 1] = turn;
                     Console.Clear();
                     Console.Write(PrintGrid());
@@ -180,11 +180,13 @@ namespace cstictactoe
             // Strategy when player goes first
             int move = 5;
             int choice = rnd.Next(1, 2);
+            int firstMove;
 
             if (player == 'x') {
                 if (square != 5 && numberMoves == 1) {
                     plan = "a";
                     move = 5;
+                    firstMove = square;
                 }
                 else if (numberMoves == 1) {
                     plan = "b";
