@@ -174,23 +174,264 @@ namespace cstictactoe
 
         static string plan = "a";
 
+        static int firstPlay;
         // Chad unbeatable algorithm
         static string aiMove() {
             Random rnd = new Random();
             // Strategy when player goes first
             int move = 5;
             int choice = rnd.Next(1, 2);
-            int firstMove;
 
             if (player == 'x') {
                 if (square != 5 && numberMoves == 1) {
                     plan = "a";
                     move = 5;
-                    firstMove = square;
+                    firstPlay = square;
                 }
                 else if (numberMoves == 1) {
                     plan = "b";
                     move = 1;
+                }
+                else if (numberMoves == 3) {
+                    switch (plan) {
+                        case "a":
+                                switch (firstPlay) {
+                                    // First section is for if player's first move was a corner
+                                    case 1:
+                                        switch (square) {
+                                            case 2:
+                                                move = 3;
+                                                break;
+                                            case 3:
+                                                move = 2;
+                                                break;
+                                            case 4:
+                                                move = 7;
+                                                break;
+                                            case 6:
+                                                move = 3;
+                                                break;
+                                            case 7:
+                                                move = 4;
+                                                break;
+                                            case 8:
+                                                move = 7;
+                                                break;
+                                            case 9:
+                                                move = 3;
+                                                break;
+                                        }
+                                        break;
+                                    case 3:
+                                        switch (square) {
+                                            case 1:
+                                                move = 2;
+                                                break;
+                                            case 2:
+                                                move = 1;
+                                                break;
+                                            case 4:
+                                                move = 1;
+                                                break;
+                                            case 6:
+                                                move = 9;
+                                                break;
+                                            case 7:
+                                                move = 9;
+                                                break;
+                                            case 8:
+                                                move = 9;
+                                                break;
+                                            case 9:
+                                                move = 6;
+                                                break;
+                                        }
+                                        break;
+                                    case 7:
+                                        switch (square) {
+                                            case 1:
+                                                move = 2;
+                                                break;
+                                            case 2:
+                                                move = 1;
+                                                break;
+                                            case 3:
+                                                move = 1;
+                                                break;
+                                            case 4:
+                                                move = 1;
+                                                break;
+                                            case 6:
+                                                move = 9;
+                                                break;
+                                            case 8:
+                                                move = 9;
+                                                break;
+                                            case 9:
+                                                move = 8;
+                                                break;
+                                        }
+                                        break;
+                                    case 9:
+                                        switch (square) {
+                                            case 1:
+                                                move = 7;
+                                                break;
+                                            case 2:
+                                                move = 3;
+                                                break;
+                                            case 3:
+                                                move = 6;
+                                                break;
+                                            case 4:
+                                                move = 7;
+                                                break;
+                                            case 6:
+                                                move = 3;
+                                                break;
+                                            case 7:
+                                                move = 8;
+                                                break;
+                                            case 8:
+                                                move = 7;
+                                                break;
+                                        }
+                                        break;
+                                    // Second section is if player's first move was on the side
+                                    case 2:
+                                        switch (square) {
+                                            case 1:
+                                                move = 3;
+                                                break;
+                                            case 3:
+                                                move = 1;
+                                                break;
+                                            case 4:
+                                                move = 3;
+                                                break;
+                                            case 6:
+                                                move = 1;
+                                                break;
+                                            case 7:
+                                                move = 1;
+                                                break;
+                                            case 8:
+                                                move = 6;
+                                                break;
+                                            case 9:
+                                                move = 3;
+                                                break;
+                                        }
+                                        break;
+                                    case 4:
+                                        switch (square) {
+                                            case 1:
+                                                move = 7;
+                                                break;
+                                            case 2:
+                                                move = 1;
+                                                break;
+                                            case 3:
+                                                move = 1;
+                                                break;
+                                            case 6:
+                                                move = 7;
+                                                break;
+                                            case 7:
+                                                move = 1;
+                                                break;
+                                            case 8:
+                                                move = 7;
+                                                break;
+                                            case 9:
+                                                move = 7;
+                                                break;
+                                        }
+                                        break;
+                                    case 6:
+                                        switch (square) {
+                                            case 1:
+                                                move = 3;
+                                                break;
+                                            case 2:
+                                                move = 3;
+                                                break;
+                                            case 3:
+                                                move = 9;
+                                                break;
+                                            case 4:
+                                                move = 1;
+                                                break;
+                                            case 7:
+                                                move = 9;
+                                                break;
+                                            case 8:
+                                                move = 9;
+                                                break;
+                                            case 9:
+                                                move = 3;
+                                                break;
+                                        }
+                                        break;
+                                    case 8:
+                                        switch (square) {
+                                            case 1:
+                                                move = 7;
+                                                break;
+                                            case 2:
+                                                move = 3;
+                                                break;
+                                            case 3:
+                                                move = 9;
+                                                break;
+                                            case 4:
+                                                move = 7;
+                                                break;
+                                            case 6:
+                                                move = 9;
+                                                break;
+                                            case 7:
+                                                move = 9;
+                                                break;
+                                            case 9:
+                                                move = 7;
+                                                break;
+                                        }
+                                        break;
+                                    default:
+                                        move = randomMove();
+                                        break;
+                                }
+                            break;
+                        case "b":
+                            switch (square) {
+                                case 2:
+                                    move = 8;
+                                    break;
+                                case 3:
+                                    move = 7;
+                                    break;
+                                case 4:
+                                    move = 6;
+                                    break;
+                                case 6:
+                                    move = 4;
+                                    break;
+                                case 7:
+                                    move = 3;
+                                    break;
+                                case 8:
+                                    move = 2;
+                                    break;
+                                case 9:
+                                    move = 3;
+                                    break;
+                                default:
+                                    move = randomMove(); // For testing only
+                                    break;
+                            }
+                            break;
+                    }
                 }
                 // Left for now, used for debugging
                 else {
