@@ -15,10 +15,11 @@ namespace cstictactoe
 
         static bool gameon = false;
 
-        static bool menu = true;
+        static bool menu2 = true;
 
         // User/AI input
         static string moveSquare = "hello";
+        static bool bot = true;
 
         // Get input from user
         static int square = 0;
@@ -35,8 +36,8 @@ namespace cstictactoe
 
         static void Main(string[] args)
         {   
-            // Show menu when menu == true
-            while (menu == true) {
+            // Show player select when menu2 == true
+            while (menu2 == true) {
                 Console.Clear();
                 Console.Write("\nSelect Player:\nx\no\n");
 
@@ -51,14 +52,14 @@ namespace cstictactoe
 
                 if (userInput == "1" || userInput == "x") {
                     player = Convert.ToChar("x");
-                    menu = false;
+                    menu2 = false;
                 }
                 else if (userInput == "2" || userInput == "o") {
                     player = Convert.ToChar("o");
-                    menu = false;
+                    menu2 = false;
                 }
                 else if (userInput == "exit"){
-                    menu = false;
+                    menu2 = false;
                     exit = true;
                     Console.Clear();
                 }
@@ -66,7 +67,7 @@ namespace cstictactoe
                     Console.Clear();
                 }
 
-                if (menu == false && exit == false) {
+                if (menu2 == false && exit == false) {
                     gameon = true;
                     Console.Clear();
                     Console.Write(PrintGrid());
@@ -79,11 +80,11 @@ namespace cstictactoe
 
             while (numberMoves <= 9 && gameon == true) {
                 
-                if (turn == player) {
-                    moveSquare = Console.ReadLine();
+                if (turn != player && bot == true) {
+                    moveSquare = aiMove();
                 }
                 else {
-                    moveSquare = aiMove();
+                    moveSquare = Console.ReadLine();
                 }
 
                 // Debugging purposes
