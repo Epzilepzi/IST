@@ -31,7 +31,7 @@ namespace cstictactoe
         static bool firstMove = true;
 
         // Functional Stuff
-        static bool firstRun = true;
+    static bool firstRun = true;
         static bool exit = false;
 
         static void Main(string[] args)
