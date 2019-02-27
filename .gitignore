@@ -1,7 +1,7 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
-Icon?
+Icon
 
 #Visual Studio Code Workspace
 IST.code-workspace
