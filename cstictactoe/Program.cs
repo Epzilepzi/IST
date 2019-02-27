@@ -43,6 +43,12 @@ namespace cstictactoe
 
         // Test thing
         static bool test = false;
+        static bool hangman = false;
+
+        static void beep() {
+            Console.Beep();
+            // SystemSounds.Beep.Play();
+        }
 
         static void resetGame() {
             gameon = false;
@@ -53,6 +59,7 @@ namespace cstictactoe
             firstRun = true;
             exit = false;
             test = false;
+            hangman = false;
             menu = true;
         }
 
@@ -83,7 +90,13 @@ namespace cstictactoe
                     }
                     else if (option == "2" || option == "h" || option == "hangman" || option == "hang man" || option == "hang") {
                         // menu = false;
+                        // hangman = true;
+                        firstRun = true;
                         test = true;
+                    }
+                    else if (option == "beep") {
+                        beep();
+                        firstRun = true;
                     }
                     else if (option == "exit") {
                         menu = false;
@@ -133,6 +146,9 @@ namespace cstictactoe
                     }
                     else if (userInput == "menu" || userInput == "reset") {
                         resetGame();
+                    }
+                    else if (userInput == "beep") {
+                        beep();
                     }               
                 }
 
@@ -169,7 +185,10 @@ namespace cstictactoe
                     }
                     else if (userInput == "menu" || userInput == "reset") {
                         resetGame();
-                    }         
+                    }
+                    else if (userInput == "beep") {
+                        beep();
+                    }             
 
                     if (menu2 == false && exit == false) {
                         gameon = true;
@@ -200,7 +219,10 @@ namespace cstictactoe
                 }
                 else if (moveSquare == "menu" || moveSquare == "reset") {
                     resetGame();
-                }         
+                }
+                else if (moveSquare == "beep") {
+                        beep();
+                }             
                 // Error check if input is square
                 else if (!int.TryParse(moveSquare, out square)) {
                     Console.Clear();
