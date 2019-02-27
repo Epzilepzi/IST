@@ -15,11 +15,18 @@ namespace cstictactoe
 
         static bool gameon = false;
 
-        static bool menu2 = true;
+        // Select game
+        static bool menu = true;
+        // Tic Tac Toe Mode Select
+        static bool menu1 = false;
+        // Tic Tac Toe Player Select
+        static bool menu2 = false;
+
+        static bool game = true;
 
         // User/AI input
         static string moveSquare = "hello";
-        static bool bot = true;
+        static bool bot = false;
 
         // Get input from user
         static int square = 0;
@@ -31,54 +38,149 @@ namespace cstictactoe
         static bool firstMove = true;
 
         // Functional Stuff
-    static bool firstRun = true;
+        static bool firstRun = true;
         static bool exit = false;
+
+        // Test thing
+        static bool test = false;
+
+        static void resetGame() {
+            gameon = false;
+            menu1 = false;
+            menu2 = false;
+            bot = false;
+            firstMove = true;
+            firstRun = true;
+            exit = false;
+            test = false;
+            menu = true;
+        }
 
         static void Main(string[] args)
         {   
-            // Show player select when menu2 == true
-            while (menu2 == true) {
-                Console.Clear();
-                Console.Write("\nSelect Player:\nx\no\n");
-
-                if (firstRun == false){
-                    Console.Write("\nInvalid input. Try again.\n\n");
-                }
-                else {
-                    Console.Write("\n\n\n");
-                }
-
-                string userInput = Console.ReadLine();
-
-                if (userInput == "1" || userInput == "x") {
-                    player = Convert.ToChar("x");
-                    menu2 = false;
-                }
-                else if (userInput == "2" || userInput == "o") {
-                    player = Convert.ToChar("o");
-                    menu2 = false;
-                }
-                else if (userInput == "exit"){
-                    menu2 = false;
-                    exit = true;
+            while (game == true) {
+                while (menu == true) {
                     Console.Clear();
+                    Console.Write("Welcome to GameHub!\n\nSelect Game to Play:\n1.) Tic Tac Toe\n2.) Hangman\n");
+
+                    if (firstRun == false && test == false){
+                        Console.Write("\nInvalid input. Try again.\n\n");
+                    }
+                    else if (test == true) {
+                        Console.Write("\nComing Soon!\n\n");
+                    }
+                    else {
+                        Console.Write("\n\n\n");
+                    }
+
+                    string option = Console.ReadLine().ToLower();
+                    firstRun = false;
+
+                    if (option == "1" || option == "t" || option == "tic tac toe" || option == "tictactoe" || option == "tic") {
+                        menu = false;
+                        menu1 = true;
+                        firstRun = true;
+                    }
+                    else if (option == "2" || option == "h" || option == "hangman" || option == "hang man" || option == "hang") {
+                        // menu = false;
+                        test = true;
+                    }
+                    else if (option == "exit") {
+                        menu = false;
+                        test = false;
+                        game = false;
+                        Console.Clear();
+                    }
+                    else if (option == "menu" || option == "reset") {
+                        resetGame();
+                    }
                 }
-                else {
+
+                while (menu1 == true) {
                     Console.Clear();
+                    Console.Write("\nWelcome to Tic Tac Toe!\n\n1.) One Player Game\n2.) Two Player Game\n");
+
+                    if (firstRun == false){
+                        Console.Write("\nInvalid input. Try again.\n\n");
+                    }
+                    else {
+                        Console.Write("\n\n\n");
+                    }
+
+                    string userInput = Console.ReadLine();
+                    firstRun = false; 
+
+                    if (userInput == "1") {
+                        menu2 = true;
+                        menu1 = false;
+                        bot = true;
+                        firstRun = true; 
+                    }
+                    else if (userInput == "2") {
+                        gameon = true;
+                        menu1 = false;
+                        bot = false;
+                        firstRun = true; 
+                        Console.Clear();
+                        Console.Write(PrintGrid());
+                        Console.Write("Game On!\n\n");
+                    }
+                    else if (userInput == "exit"){
+                        menu1 = false;
+                        exit = true;
+                        game = false;
+                        Console.Clear();
+                    }
+                    else if (userInput == "menu" || userInput == "reset") {
+                        resetGame();
+                    }               
                 }
 
-                if (menu2 == false && exit == false) {
-                    gameon = true;
+                // Show player select when menu2 == true
+                while (menu2 == true) {
                     Console.Clear();
-                    Console.Write(PrintGrid());
-                    Console.Write("Game On!\n\n");
+                    Console.Write("\nSelect Player:\n\n1.) x\n2.) o\n");
+
+                    if (firstRun == false){
+                        Console.Write("\nInvalid input. Try again.\n\n");
+                    }
+                    else {
+                        Console.Write("\n\n\n");
+                    }
+
+                    string userInput = Console.ReadLine();
+                    firstRun = false; 
+
+                    if (userInput == "1" || userInput == "x") {
+                        player = Convert.ToChar("x");
+                        menu2 = false;
+                        bot = true;
+                    }
+                    else if (userInput == "2" || userInput == "o") {
+                        player = Convert.ToChar("o");
+                        menu2 = false;
+                        bot = true;
+                    }
+                    else if (userInput == "exit"){
+                        menu2 = false;
+                        exit = true;
+                        game = false;
+                        Console.Clear();
+                    }
+                    else if (userInput == "menu" || userInput == "reset") {
+                        resetGame();
+                    }         
+
+                    if (menu2 == false && exit == false) {
+                        gameon = true;
+                        Console.Clear();
+                        Console.Write(PrintGrid());
+                        Console.Write("Game On!\n\n");
+                    }
                 }
 
-                firstRun = false;
-            }
 
-
-            while (numberMoves <= 9 && gameon == true) {
+                while (numberMoves <= 9 && gameon == true) {
                 
                 if (turn != player && bot == true) {
                     moveSquare = aiMove();
@@ -93,8 +195,12 @@ namespace cstictactoe
                 }
                 else if (moveSquare == "exit") {
                     gameon = false;
+                    game = false;
                     Console.Clear();
                 }
+                else if (moveSquare == "menu" || moveSquare == "reset") {
+                    resetGame();
+                }         
                 // Error check if input is square
                 else if (!int.TryParse(moveSquare, out square)) {
                     Console.Clear();
@@ -109,8 +215,8 @@ namespace cstictactoe
 
                     // End game if CheckWin() returns true
                     if (CheckWin() == true) {
-                        Console.WriteLine(turn + " has won!\n");
                         gameon = false;
+                        Console.WriteLine(turn + " has won!\n");
                     }
                     // Turn Switching
                     else {
@@ -147,6 +253,7 @@ namespace cstictactoe
                     // This line below is mainly for the dbstalemate function
                     gameon = false;
                 }
+            }
             }
         }
 
