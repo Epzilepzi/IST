@@ -197,8 +197,7 @@ namespace cstictactoe
                         Console.Write("Game On!\n\n");
                     }
                 }
-
-
+                
                 while (numberMoves <= 9 && gameon == true) {
                 
                     if (turn != player && bot == true) {
@@ -221,7 +220,7 @@ namespace cstictactoe
                         resetGame();
                     }
                     else if (moveSquare == "beep") {
-                            beep();
+                        beep();
                     }             
                     // Error check if input is square
                     else if (!int.TryParse(moveSquare, out square)) {
@@ -238,7 +237,7 @@ namespace cstictactoe
                         // End game if CheckWin() returns true
                         if (CheckWin() == true) {
                             gameon = false;
-                            Console.WriteLine(turn + " has won!\n");
+                            Console.WriteLine(turn + " has won! Type \"reset\" to play again.\n");
                         }
                         // Turn Switching
                         else {
@@ -271,10 +270,25 @@ namespace cstictactoe
                     if (numberMoves == 9) {
                         Console.Clear();
                         Console.Write(PrintGrid());
-                        Console.WriteLine("It's a stalemate!\n");
+                        Console.WriteLine("It's a stalemate! Type \"reset\" to play again.\n");
                         // This line below is mainly for the dbstalemate function
                         gameon = false;
                     }
+                }
+
+                while (gameon == false && game == true && menu == false && menu1 == false && menu2 == false) {
+                    string input = Console.ReadLine();
+                    if (input == "menu" || input == "reset") {
+                        resetGame();
+                    }
+                    else if (input == "beep") {
+                        beep();
+                    }  
+                    else if (input == "exit") {
+                        exit = true;
+                        game = false;
+                        Console.Clear();
+                    }     
                 }
             }
         }
