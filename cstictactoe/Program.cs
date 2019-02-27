@@ -201,81 +201,81 @@ namespace cstictactoe
 
                 while (numberMoves <= 9 && gameon == true) {
                 
-                if (turn != player && bot == true) {
-                    moveSquare = aiMove();
-                }
-                else {
-                    moveSquare = Console.ReadLine();
-                }
-
-                // Debugging purposes
-                if (moveSquare == "dbgstalemate") {
-                    numberMoves = 9;
-                }
-                else if (moveSquare == "exit") {
-                    gameon = false;
-                    game = false;
-                    Console.Clear();
-                }
-                else if (moveSquare == "menu" || moveSquare == "reset") {
-                    resetGame();
-                }
-                else if (moveSquare == "beep") {
-                        beep();
-                }             
-                // Error check if input is square
-                else if (!int.TryParse(moveSquare, out square)) {
-                    Console.Clear();
-                    Console.Write(PrintGrid());
-                    Console.WriteLine("Improper input. Try again player " + turn + "\n");
-                }
-                //Check for valid move
-                else if (square >= 1 && square <= 9 && grid[square - 1] == '-') {
-                    grid[square - 1] = turn;
-                    Console.Clear();
-                    Console.Write(PrintGrid());
-
-                    // End game if CheckWin() returns true
-                    if (CheckWin() == true) {
-                        gameon = false;
-                        Console.WriteLine(turn + " has won!\n");
+                    if (turn != player && bot == true) {
+                        moveSquare = aiMove();
                     }
-                    // Turn Switching
                     else {
-                        if (firstMove == true) {
-                            firstMove = false;
-                            Console.WriteLine("Game On!\n");
-                        }
-                        else {
-                            Console.WriteLine("\n");
-                        }
+                        moveSquare = Console.ReadLine();
+                    }
 
-                        if(turn == 'x') {
-                            turn = 'o';
-                            
-                        }
-                        else {
-                            turn = 'x';
-                        }
+                    // Debugging purposes
+                    if (moveSquare == "dbgstalemate") {
+                        numberMoves = 9;
+                    }
+                    else if (moveSquare == "exit") {
+                        gameon = false;
+                        game = false;
+                        Console.Clear();
+                    }
+                    else if (moveSquare == "menu" || moveSquare == "reset") {
+                        resetGame();
+                    }
+                    else if (moveSquare == "beep") {
+                            beep();
+                    }             
+                    // Error check if input is square
+                    else if (!int.TryParse(moveSquare, out square)) {
+                        Console.Clear();
+                        Console.Write(PrintGrid());
+                        Console.WriteLine("Improper input. Try again player " + turn + "\n");
+                    }
+                    //Check for valid move
+                    else if (square >= 1 && square <= 9 && grid[square - 1] == '-') {
+                        grid[square - 1] = turn;
+                        Console.Clear();
+                        Console.Write(PrintGrid());
 
-                        numberMoves++;
+                        // End game if CheckWin() returns true
+                        if (CheckWin() == true) {
+                            gameon = false;
+                            Console.WriteLine(turn + " has won!\n");
+                        }
+                        // Turn Switching
+                        else {
+                            if (firstMove == true) {
+                                firstMove = false;
+                                Console.WriteLine("Game On!\n");
+                            }
+                            else {
+                                Console.WriteLine("\n");
+                            }
+
+                            if(turn == 'x') {
+                                turn = 'o';
+                                
+                            }
+                            else {
+                                turn = 'x';
+                            }
+
+                            numberMoves++;
+                        }
+                    }
+                    // Throws error if someone is dumb
+                    else {
+                        Console.Clear();
+                        Console.Write(PrintGrid());
+                        Console.WriteLine("Improper input. Try again player " + turn + "\n");
+                    }
+
+                    if (numberMoves == 9) {
+                        Console.Clear();
+                        Console.Write(PrintGrid());
+                        Console.WriteLine("It's a stalemate!\n");
+                        // This line below is mainly for the dbstalemate function
+                        gameon = false;
                     }
                 }
-                // Throws error if someone is dumb
-                else {
-                    Console.Clear();
-                    Console.Write(PrintGrid());
-                    Console.WriteLine("Improper input. Try again player " + turn + "\n");
-                }
-
-                if (numberMoves == 9) {
-                    Console.Clear();
-                    Console.Write(PrintGrid());
-                    Console.WriteLine("It's a stalemate!\n");
-                    // This line below is mainly for the dbstalemate function
-                    gameon = false;
-                }
-            }
             }
         }
 
