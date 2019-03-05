@@ -293,7 +293,7 @@ namespace cstictactoe
             }
         }
 
-        // Set the playing field
+        // Set the playing field for Tic Tac Toe
         static string PrintGrid() {
             string output = "\n\n[" +
                 grid[0] + "][" +
@@ -705,8 +705,38 @@ namespace cstictactoe
             return move.ToString();
         }
 
+        // Letter count for word
+        static int letterCount = 0;
+
+        // Retrieve a word for hangman from list (?)
+        static string getWord(string cat) {
+            Random r = new Random();
+            int rand = r.Next(1, 4);
+            string word = "a word";
+            switch (cat) {
+                // Category 1 - African Animals
+                case "1":
+                    switch (rand) {
+                        case 1:
+                            word = "elephant";
+                            letterCount = 8;
+                            break;
+                        case 2:
+                            word = "hippopotamus";
+                            letterCount = 12;
+                            break;
+                    }
+                    break;
+                // Invalid Category
+                default:
+                    word = "!";
+                    break;
+            }
+            return word;
+        }
+
         // Check 8 ways of winning
-        static bool CheckWin(){
+        static bool CheckWin() {
             if (grid[0] == grid[1] && grid[1] == grid[2] && grid[0] != '-') {
                 return true;
             }
