@@ -1,1 +1,5 @@
 # IST
+
+## **THIS REPO IS NOW OUTDATED. NEW LOCATION [HERE](https://bitbucket.org/yeetmeistergu/ist/)**
+
+I ONLY LEFT THIS HERE FOR BACKUP PURPOSES (AND BECAUSE I'M LAZY).
